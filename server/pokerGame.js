@@ -13,6 +13,17 @@ class pokerGame{
         this.deck = new DeckOfCards();
         this.communityCards = [];
         this.currBet = 0;
+        this.totalPot = Number(0);
+        this.needsDeal = true;
+    }
+    getTotalPot()
+    {
+        console.log(this.totalPot);
+        return this.totalPot;
+    }
+    addToPot(num)
+    {
+        Number(this.totalPot +=num);
     }
     setCurrBet(a){
         this.currBet = a;
@@ -93,23 +104,24 @@ class pokerGame{
     getWinner()
     {
         let handEval = new handEvaluator(this.communityCards);
-        var currWinner = this.players[0];
+        var stillIn = this.getCurrPlayersInHand();
+        var currWinner = stillIn[0];
 		var stillNull;
-		for(var i = 0; i < this.players.length; i++)
+		for(var i = 0; i < stillIn.length; i++)
 		{
 			if(stillNull)
 			{
-				if(this.players[i] != null)
+				if(stillIn[i] != null)
 				{
 					stillNull = false;
-					currWinner = this.players[i];
+					currWinner = stillIn[i];
 				}
 			}
-			else if(this.players[i] != null)
+			else if(stillIn[i] != null)
 			{
-				if(handEval.returnBestHand(currWinner.getHand(), this.players[i].getHand()) == this.players[i].getHand())
+				if(handEval.returnBestHand(currWinner.getHand(), stillIn[i].getHand()) == stillIn[i].getHand())
 				{
-					currWinner = this.players[i];
+					currWinner = stillIn[i];
 				}
 			}
 		}
@@ -165,31 +177,182 @@ class pokerGame{
     }
 
     dealFlop(){
-        for(var i = 0; i < 3; i++)
-        {
-            this.communityCards[i] = this.deck.deal();
+        for(var j = 0; j < 3; j++){
+            this.communityCards[j] = this.deck.deal();
+            console.log("flop card dealt");
         }
-    }
-    dealTurn(){
-        this.communityCards[3] = this.deck.deal();
-    }
-    dealRiver(){
-        this.communityCards[4] = this.deck.deal();
-    }
-
-    dealFullBoard(){
-        this.dealFlop(); this.dealTurn(); this.dealRiver();
-
+        
         var cardPNGS = [];
         for(var i = 0; i < this.communityCards.length; i++)
         {
             var info = this.communityCards[i].cardToPNG();
             cardPNGS.push(info);
         }
-
         return cardPNGS;
     }
+    dealTurn(){
+        
+        this.communityCards[3] = this.deck.deal();
+        console.log("turn card dealt")
+        
+        var cardPNGS = [];
+        for(var i = 0; i < this.communityCards.length; i++)
+        {
+            var info = this.communityCards[i].cardToPNG();
+            cardPNGS.push(info);
+        }
+        return cardPNGS;
 
+    }
+    dealRiver(){
+       
+        this.communityCards[4] = this.deck.deal();
+        console.log("river card dealth");
+        this.needsDeal = false;
+        var cardPNGS = [];
+        for(var i = 0; i < this.communityCards.length; i++)
+        {
+            var info = this.communityCards[i].cardToPNG();
+            cardPNGS.push(info);
+        }
+        return cardPNGS;
+    }
+    getNeedsDeal(){
+        return this.needsDeal;
+    }
+
+    //deal the flop/turn/river depending on whats already been dealt
+    deal(){
+        if(this.communityCards.length == 0){
+            return this.dealFlop();
+        }
+        else if(this.communityCards.length == 3)
+        {
+            return this.dealTurn();
+        }
+        else if(this.communityCards.length == 4){
+            return this.dealRiver();
+        }
+        
+        else{
+            var cardPNGS = [];
+            for(var i = 0; i < this.communityCards.length; i++)
+                {
+                    var info = this.communityCards[i].cardToPNG();
+                    cardPNGS.push(info);
+                }
+            return cardPNGS;
+        }
+
+    }
+
+    //show the winner and give them their rightfully owned money
+    dealWin(){
+        var winner = this.getWinner();
+        winner.addToStack(this.totalPot);
+
+        for(var i = 0; i < this.totalPlayers; i++){
+            this.players[i].setCurrMoneyInPot(0);
+        }
+
+    }
+
+    //sets all players moves to u (undefined, havent gone yet)
+    clearMoves(){
+        for(var i = 0; i <  this.totalPlayers; i++){
+            this.players[i].setValTurn("u");
+        }
+    }
+
+    //returns everyone in the hand (that isnt folded)
+    getCurrPlayersInHand(){
+        var playersInHand = [];
+        for(var i = 0; i <  this.totalPlayers; i++){
+             if(this.players[i].getValTurn() != "pf" && this.players[i].getValTurn() != "f"){
+                playersInHand.push(this.players[i]);
+             }
+        }
+        return playersInHand;
+    }
+
+    //clear the game for another hand
+    clearGame(){
+        this.clearMoves();
+        this.totalPot = 0;
+        this.needsDeal = true;
+    }
+
+
+
+    //Player turn options
+    
+    //Player turn options
+    
+    //Player turn options
+    
+    //Player turn options
+
+    playerRaise(player, raiseamt){
+         //IMPLEMENT: takes money, puts in pot, updates all stacksizes, updates pot
+
+
+        //  if(player.getValTurn() > (player.getStackSize() - player.getCurrMoneyInPot())){
+        //     io.to(theGame.getGameID()).emit('message', player.getName() + ", you do not have enough money to raise that");
+        //     player.setValTurn("u");
+
+        //   }
+        //   else{
+        //     var raiseAmt = Number(player.getValTurn());
+        //     theGame.setCurrBet(player.getValTurn());
+        //     theGame.addToPot(raiseAmt);
+        //     player.setCurrMoneyInPot(player.getValTurn());
+        //     io.to(theGame.getGameID()).emit('message', player.getName() + ", raised " + player.getValTurn());
+        //     io.to(theGame.getGameID()).emit('potSize', theGame.getTotalPot());
+        //   }
+    }
+    playerFold(player){
+        io.to(theGame.getGameID()).emit('message', player.getName() + " has folded ");
+    }
+    playerCheck(player){
+        // if(theGame.getCurrBet() > 0){
+        //     player.setValTurn("u");
+        //     io.to(theGame.getGameID()).emit('message', player.getName() + ", you cannot check when there is a raise ");
+
+        //   }
+
+        //   else{
+        //    io.to(theGame.getGameID()).emit('message', player.getName() + " has checked ");
+        //   }
+    }
+    playerCall(player){
+        // if(theGame.getCurrBet() > 0 && ( (player.getStackSize() - player.getCurrMoneyInPot()) > theGame.getCurrBet())){
+        //     io.to(theGame.getGameID()).emit('message', player.getName() + " has called ");
+        //     theGame.addToPot(Number(theGame.getCurrBet() - player.getCurrMoneyInPot()));
+        //     player.subtractFromStack(theGame.getCurrBet() - player.getCurrMoneyInPot());
+        //     player.setCurrMoneyInPot(theGame.getCurrBet());
+        //     io.to(player.getRoom()).emit('roomUsers', {room: player.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
+        //     io.to(theGame.getGameID()).emit('message', "Pot size is: " + theGame.getCurrMoneyInPot());
+        //     io.to(theGame.getGameID()).emit('potSize', theGame.getTotalPot());
+
+        //     //IMPLEMENT put money in pot
+        //   }
+        //   else{
+        //     player.setValTurn("u");
+        //     io.to(theGame.getGameID()).emit('message', player.getName() + ", you have insufficient funds");
+
+        //     //IMPLEMENT split pot
+        //   }
+    }
+    playerAutoFold(player){
+        // if(theGame.getCurrBet() == 0){
+        //     io.to(theGame.getGameID()).emit('message', player.getName() + " auto check ");
+        //     player.setValTurn("a");
+        //   }
+        //   else{
+        //     io.to(theGame.getGameID()).emit('message', player.getName() + " has folded by autofolder bot ");
+        //     player.setValTurn("f");
+        //   }
+    }
 
 }
 

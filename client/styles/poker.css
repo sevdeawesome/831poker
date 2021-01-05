@@ -80,6 +80,8 @@ body{
     position: fixed;
     right: 0;
     top: 0;
+    color: red;
+    
 }
 li{
     list-style-type: none;
@@ -97,6 +99,10 @@ li{
     transform: translateX(-50%);
     width: 400px;
     bottom: 340px;
+}
+#potSize{
+    color:white;
+    font-size: 50px;
 }
 #theBoard li{
     display:inline-block;

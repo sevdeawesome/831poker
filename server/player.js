@@ -14,16 +14,27 @@ class player {
     this.valTurn = "u";
     this.currMoneyInPot = 0;
   }
+  substractFromStack(num)
+  {
+    this.stackSize-= num;
+  }
+  getStackSize(){
+    return this.stackSize;
+  }
+  addToStack(num)
+  {
+    this.stackSize+=num;
+  }
   setCurrMoneyInPot(a){
     this.currMoneyInPot = a;
   }
   getCurrMoneyInPot(){
     return this.currMoneyInPot;
   }
-  setvalTurn(a){
+  setValTurn(a){
     this.valTurn = a;
   }
-  getvalTurn(){
+  getValTurn(){
     return this.valTurn;
   }
   getRoom(){
@@ -49,9 +60,7 @@ class player {
   getHand(){
     return this.hand;
   }
-  getStackSize(){
-    return this.stackSize;
-  }
+
   setHand(c1, c2){
     this.hand = new playerHand(c1, c2);
     console.log(this.name + " in " + this.room + " got dealt " + this.hand.getStringHand());

@@ -80,7 +80,7 @@ io.on('connection', (sock) => {
 
     //Send users client the room name and info so it can display
     io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
-    console.log(theGame.getAllStackSizes());
+
     io.to(user.getRoom()).emit('message', theGame.getCurrentUser(sock.id).getName() + " is now spectating...");
 
   });
@@ -111,6 +111,7 @@ io.on('connection', (sock) => {
   sock.on('message', (text) => {
     var theGame = getGameFromSockID(sock.id);
     io.to(theGame.getGameID()).emit("message", text);
+
     
   });
 
@@ -149,8 +150,8 @@ io.on('connection', (sock) => {
     //post blinds
 
     //round of turns
-    const turnTime = 5000;
-    var players = theGame.getAllPlayers();
+    const turnTime = 500;
+    // var players = theGame.getAllPlayers();
     var playerIndex = 0;
     var currPlayer = theGame.getPlayerAt(playerIndex);
     var numPlayers = theGame.getPlayersLength();
@@ -166,86 +167,79 @@ io.on('connection', (sock) => {
       function checkIfMoved()
       {
         player.setTurn(true);
-        console.log(player.getName());
-        console.log(playermove);
+        
 
         //tries to check condition
-        if(player.getvalTurn() == "a"){
-           if(theGame.getCurrBet() > 0){
-             player.setvalTurn("u");
-             io.to(theGame.getGameID()).emit('message', player.getName() + ", you cannot check when there is a raise ");
-
-           }
-
-           else{
-            io.to(theGame.getGameID()).emit('message', player.getName() + " has checked ");
-           }
+        if(player.getValTurn() == "a"){
+           theGame.playerCheck(player);
         }
 
         //tries to call condition
-        if(player.getvalTurn() == "b"){
-          if(theGame.getCurrBet() > 0 || (player.getStackSize() - player.getCurrBet()) > theGame.getCurrBet()){
-            io.to(theGame.getGameID()).emit('message', player.getName() + " has called ");
-            //IMPLEMENT put money in pot
-          }
-          else{
-            player.setvalTurn("u");
-            io.to(theGame.getGameID()).emit('message', player.getName() + ", you have insufficient funds");
-
-            //IMPLEMENT split pot
-          }
+        if(player.getValTurn() == "b"){
+          
           
         }
 
         //tries to raise condition
-        else if(player.getvalTurn() > 0){
-
-          //IMPLEMENT: takes money, puts in pot, updates all stacksizes, updates pot
-          if(player.getvalTurn() > (player.getStackSize() - player.getCurrBet())){
-            io.to(theGame.getGameID()).emit('message', player.getName() + ", you do not have enough money to raise that");
-            player.setvalTurn("u");
-
-          }
-          else{
-            theGame.setCurrBet(player.getvalTurn());
-            player.setCurrMoneyInPot(player.getvalTurn());
-            io.to(theGame.getGameID()).emit('message', player.getName() + ", raised " + player.getvalTurn());
-          }
-         
+        else if(player.getValTurn() > 0){
+          theGame.playerRaise(player);
         }
 
 
         //folds condition
-        if(player.getvalTurn() == "f"){
-          io.to(theGame.getGameID()).emit('message', player.getName() + " has folded ");
+        if(player.getValTurn() == "f"){
+          theGame.playerFold(player);
         }
 
         
 
         //autofolder
         if(playermove == "f" ){
-          if(theGame.getCurrBet() == 0){
-            io.to(theGame.getGameID()).emit('message', player.getName() + " auto check ");
-            player.setvalTurn("c");
-          }
-          else{
-            io.to(theGame.getGameID()).emit('message', player.getName() + " has folded by autofolder bot ");
-            player.setvalTurn("pf");
-          }
-      
+          theGame.playerAutoFold(player);
         }
 
 
 
-
-        if(player.getvalTurn() != 'u' || playermove == "f" || player.getvalTurn() == "f" || player.getvalTurn() == "pf"){
+        //if they enter a move
+        if(player.getValTurn() != 'u' || playermove == "f" || player.getValTurn() == "f" || player.getValTurn() == "pf"){
           clearInterval(interval);
+          console.log(player.getName());
+          console.log(player.getValTurn());
+          
+          player.setTurn(false);
+
+          //if more players still need to go
           if(playerIndex < numPlayers - 1){
             playerIndex++;
             currPlayer = theGame.getPlayerAt(playerIndex);
-            player.setvalTurn("u");
-            getPlayersTurn(currPlayer);
             io.to(theGame.getGameID()).emit('message', currPlayer.getName() + "'s turn ");
+            if(player.getValTurn() != "f" && playermove != "f"){
+              player.setValTurn("u");
+            }
+            getPlayersTurn(currPlayer);
+            
+            
+          }
+
+          //round over condition --> all players have been cycled through
+          else if(playerIndex == numPlayers - 1){
+            //still needs to deal
+            if(theGame.getNeedsDeal()){
+              io.to(theGame.getGameID()).emit('dealBoard',  theGame.deal());
+              theGame.clearMoves();
+              playerIndex = 0;
+              currPlayer = theGame.getPlayerAt(playerIndex)
+              io.to(theGame.getGameID()).emit('message', currPlayer.getName() + "'s turn ");
+              getPlayersTurn(currPlayer);
+              
+            }
+            //all streets have been won condition
+            else{
+              theGame.dealWin();
+              io.to(player.getRoom()).emit('roomUsers', {room: player.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
+              console.log(theGame.getWinner().getName() + " has won the hand!!!");
+              io.to(player.getRoom()).emit("message", theGame.getWinner().getName() + " has won the hand!!!");
+            }
             
           }
         }
@@ -260,7 +254,12 @@ io.on('connection', (sock) => {
 
     getPlayersTurn(currPlayer);
 
-    
+   
+   
+
+
+ 
+
 
     //flop
     //round of turns
@@ -284,12 +283,12 @@ io.on('connection', (sock) => {
     let theGame = getGameFromSockID(sock.id);
     let player = theGame.getCurrentUser(sock.id);
     if(player.getTurn()){
-      player.setvalTurn(turnVariable);
+      player.setValTurn(turnVariable);
 
     }
     else{
       sock.emit('message', "Shut the fuck up retard, play on your turn");
-      console.log(player.getvalTurn());
+      console.log(player.getValTurn());
     }
     
   });

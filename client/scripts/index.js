@@ -38,6 +38,11 @@ sock.on('dealBoard', (arr) => {
   showBoard(arr);
 });
 
+sock.on('potSize', (num) => {
+  var pot = document.querySelector("#potSize");
+  pot.innerText = '';
+  pot.innerText = "Current Pot: " + num;
+});
 
 
 
