@@ -1,0 +1,62 @@
+body{
+    background-color: #1e2620;
+}
+#content{
+    margin-top: 5%;
+}
+p{
+    color: white;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 30px;
+}
+.input{
+    padding: 10px;
+        border: 2px solid white;
+}
+input{
+    background:none;
+    color: white;
+    margin: 5px;
+    padding: 5px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 30px;
+    border: none;   
+}
+input:focus{
+    border: none;
+    outline: none;
+}
+button{
+    background: none;
+    border: none;
+    padding: 5px;
+    border: 3px solid white;
+    transition: background-color 0.2s ease-out;
+
+}
+button:hover{
+    cursor: pointer;
+    background-color: #6B3934;
+    
+}
+#aboutus{
+    text-decoration: underline !important;
+
+}
+#footer a{
+    color: white;
+    text-decoration: none;
+    transition: color .1s ease-in-out;
+}
+#footer a:hover{
+    color: #6B3934
+}
+#footer{
+    font-size: 15px;
+    position:fixed;
+       left:0px;
+       bottom:0px;
+       width:100%;
+       margin-bottom: 30px;
+}
+

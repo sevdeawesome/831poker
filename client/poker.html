@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--
+The following is basic metadata and importing the base stylesheet and script
+-->
+<meta charset="UTF-8">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<html lang="en">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name='subject' content=''>
+<link rel="stylesheet" type="text/css" href="styles/index.css">
+<link rel="stylesheet" type="text/css" href="styles/poker.css">
+
+<!--
+The above is basic metadata and importing the base stylesheet and script
+
+Jquery import:
+
+
+Bootstrap CSS import:
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+-->
+
+<title>Poker</title>
+</head>
+<body>
+
+<center>
+  <button id="generate">Begin Game</button>
+</center>
+
+<br>
+<center>
+  
+<div id="theTable">
+  <ul  id="theBoard">
+    <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li>
+  </ul>
+  <img id="tableLogo" src="styles/img/logo-file.png">
+  <center>
+    <div id="myCards">
+      <img id="card1" src="img/blue_back.png">
+      <img id="card2" src="img/blue_back.png">
+    </div>
+  </center>
+</div>
+</center>
+
+
+
+
+
+
+<div id="chatdiv">
+<ul id="events">
+  
+</ul>
+
+  <form id="chat-form">
+    <input id="chat" autocomplete="off" title="chat"/><button id="say">Say</button>
+  </form>
+  <br>
+
+<form id="poker-form" type="submit">
+  <button value="a" id="checkbutton" >Check</button>
+  <button value="b" id="callbutton">Call</button><br>
+  <input value="r" id="raise" autocomplete="off" title="raise" type="number"/><button id="raisebutton">Raise</button><br>
+  
+  <button value="f" id="foldbutton">Fold</button>
+  <!-- <button id="toggleStraddle">Straddle</button> -->
+</form>
+</div>
+
+<br>
+
+
+ <div id="usersinRoom">
+  <h2>Users In Lobby <span id="roomName"></span>: </h2>
+  
+  <ul id="userList"></ul>
+ </div>
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" integrity="sha512-BHtomM5XDcUy7tDNcrcX1Eh0RogdWiMdXl3wJcKB3PFekXb3l5aDzymaTher61u6vEZySnoC/SAj2Y/p918Y3w==" crossorigin="anonymous"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="scripts/functions.js"></script>
+<script src="scripts/index.js"></script>
+</html>
