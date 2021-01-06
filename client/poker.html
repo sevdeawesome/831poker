@@ -67,11 +67,11 @@ Bootstrap CSS import:
   <br>
 
 <form id="poker-form" type="submit">
-  <button value="a" id="checkbutton" >Check</button>
-  <button value="b" id="callbutton">Call</button><br>
-  <input value="r" id="raise" autocomplete="off" title="raise" type="number"/><button id="raisebutton">Raise</button><br>
+  <button value="check" id="checkbutton" >Check</button>
+  <button value="call" id="callbutton">Call</button><br>
+  <input value="raise" id="raise" autocomplete="off" title="raise" type="number"/><button id="raisebutton">Raise</button><br>
   
-  <button value="f" id="foldbutton">Fold</button>
+  <button value="fold" id="foldbutton">Fold</button>
   <!-- <button id="toggleStraddle">Straddle</button> -->
 </form>
 </div>
@@ -87,7 +87,9 @@ Bootstrap CSS import:
 
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" integrity="sha512-BHtomM5XDcUy7tDNcrcX1Eh0RogdWiMdXl3wJcKB3PFekXb3l5aDzymaTher61u6vEZySnoC/SAj2Y/p918Y3w==" crossorigin="anonymous"></script>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="scripts/functions.js"></script>
 <script src="scripts/index.js"></script>

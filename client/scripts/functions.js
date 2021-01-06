@@ -98,15 +98,15 @@ function showBoard(arr){
 function sendCheck(e)
 {
   e.preventDefault();  //prevent from reloading page
-  sock.emit('playerTurn', "a");
+  sock.emit('playerTurn', "check");
 }
 function sendCall(e){
   e.preventDefault();  //prevent from reloading page
-  sock.emit('playerTurn', "b");
+  sock.emit('playerTurn', "call");
 }
 function sendFold(e){
   e.preventDefault();  //prevent from reloading page
-  sock.emit('playerTurn', "f");
+  sock.emit('playerTurn', "fold");
 }
 function sendRaise(e){
   e.preventDefault();  //prevent from reloading page

@@ -116,6 +116,10 @@ io.on('connection', (sock) => {
   });
 
 
+  var interval = null;
+  //setTimeout(function(){ playermove = "f"; }, turnTime);
+
+  //when someone hits start game
   sock.on('startGame', () =>{
     var theGame = null;
     for(var i = 0; i < listOfPokerRooms.length; i++)
@@ -137,141 +141,15 @@ io.on('connection', (sock) => {
     //Sending clients the players hands
     io.to(theGame.getGameID()).emit('hands', theGame.returnDisplayHands());
 
-    //Dealing board test
-    // io.to(theGame.getGameID()).emit('dealBoard', theGame.dealFullBoard());
-
-    // io.to(theGame.getGameID()).emit('message', "The winner of this hand is: " + theGame.getWinner().getName());
+    var currPlayer = theGame.getPlayerFromSockID(sock);
+    currPlayer.setTurn(true);
 
 
-    /*
-      GAME TURNS GO HERE
+    interval = setTimeout(function(){
+        currPlayer.setValTurn("autofolded");
+        console.log(currPlayer.getName() + " autofolded ")
 
-    */
-    //post blinds
-
-    //round of turns
-    const turnTime = 500;
-    // var players = theGame.getAllPlayers();
-    var playerIndex = 0;
-    var currPlayer = theGame.getPlayerAt(playerIndex);
-    var numPlayers = theGame.getPlayersLength();
-  
-      io.to(theGame.getGameID()).emit('message', currPlayer.getName() + "'s turn ");
-    
-    function getPlayersTurn(player){      ///GETTING ALL PLAYERS TURNS START
-      var playermove = "u";
-
-       //they check-->
-      
-      
-      function checkIfMoved()
-      {
-        player.setTurn(true);
-        
-
-        //tries to check condition
-        if(player.getValTurn() == "a"){
-           theGame.playerCheck(player);
-        }
-
-        //tries to call condition
-        if(player.getValTurn() == "b"){
-          
-          
-        }
-
-        //tries to raise condition
-        else if(player.getValTurn() > 0){
-          theGame.playerRaise(player);
-        }
-
-
-        //folds condition
-        if(player.getValTurn() == "f"){
-          theGame.playerFold(player);
-        }
-
-        
-
-        //autofolder
-        if(playermove == "f" ){
-          theGame.playerAutoFold(player);
-        }
-
-
-
-        //if they enter a move
-        if(player.getValTurn() != 'u' || playermove == "f" || player.getValTurn() == "f" || player.getValTurn() == "pf"){
-          clearInterval(interval);
-          console.log(player.getName());
-          console.log(player.getValTurn());
-          
-          player.setTurn(false);
-
-          //if more players still need to go
-          if(playerIndex < numPlayers - 1){
-            playerIndex++;
-            currPlayer = theGame.getPlayerAt(playerIndex);
-            io.to(theGame.getGameID()).emit('message', currPlayer.getName() + "'s turn ");
-            if(player.getValTurn() != "f" && playermove != "f"){
-              player.setValTurn("u");
-            }
-            getPlayersTurn(currPlayer);
-            
-            
-          }
-
-          //round over condition --> all players have been cycled through
-          else if(playerIndex == numPlayers - 1){
-            //still needs to deal
-            if(theGame.getNeedsDeal()){
-              io.to(theGame.getGameID()).emit('dealBoard',  theGame.deal());
-              theGame.clearMoves();
-              playerIndex = 0;
-              currPlayer = theGame.getPlayerAt(playerIndex)
-              io.to(theGame.getGameID()).emit('message', currPlayer.getName() + "'s turn ");
-              getPlayersTurn(currPlayer);
-              
-            }
-            //all streets have been won condition
-            else{
-              theGame.dealWin();
-              io.to(player.getRoom()).emit('roomUsers', {room: player.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
-              console.log(theGame.getWinner().getName() + " has won the hand!!!");
-              io.to(player.getRoom()).emit("message", theGame.getWinner().getName() + " has won the hand!!!");
-            }
-            
-          }
-        }
-
-       
-  
-      }
-      setTimeout(function(){ playermove = "f"; }, turnTime);
-      var interval = setInterval(checkIfMoved, 100);
-      
-    }  //GETTING ALL PLAYERS TURNS END
-
-    getPlayersTurn(currPlayer);
-
-   
-   
-
-
- 
-
-
-    //flop
-    //round of turns
-    //turn
-    //round of turns
-    //river
-    //return winner
-
-    /*
-      GAME TURNS GO HERE
-
-    */
+     }, theGame.getTurnTime());
   
   });
 
@@ -282,8 +160,11 @@ io.on('connection', (sock) => {
   sock.on('playerTurn', (turnVariable) =>{
     let theGame = getGameFromSockID(sock.id);
     let player = theGame.getCurrentUser(sock.id);
+
     if(player.getTurn()){
       player.setValTurn(turnVariable);
+
+      clearInterval(interval);
 
     }
     else{
