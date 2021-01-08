@@ -12,30 +12,22 @@ class pokerGame{
         this.begun = false;  //has the game already started
         this.deck = new DeckOfCards();
         this.communityCards = [];
-        this.currBet = 0;
         this.totalPot = Number(0);
         this.needsDeal = true;
         this.turnTime = 10000;
         this.currPlayer = null;
+        this.currPokerRound = null;
+    }
+    setCurrPokerRound(pokerRound){
+        this.currPokerRound = pokerRound;
+    }
+    getCurrPokerRound(){
+        return this.currPokerRound;
     }
     getTurnTime(){
         return this.turnTime;
     }
-    getTotalPot()
-    {
-        console.log(this.totalPot);
-        return this.totalPot;
-    }
-    addToPot(num)
-    {
-        Number(this.totalPot +=num);
-    }
-    setCurrBet(a){
-        this.currBet = a;
-    }
-    getCurrBet(){
-        return this.currBet;
-    }
+
     getDeck(){
         return this.deck;
     }
@@ -167,6 +159,7 @@ class pokerGame{
         {
             this.players[i].setHand(this.deck.deal(), this.deck.deal());
         }
+        
     }
 
     returnDisplayHands(){
@@ -246,47 +239,41 @@ class pokerGame{
                     var info = this.communityCards[i].cardToPNG();
                     cardPNGS.push(info);
                 }
+            this.needsDeal = false;
             return cardPNGS;
+            
         }
 
     }
 
-    //show the winner and give them their rightfully owned money
-    dealWin(){
-        var winner = this.getWinner();
-        winner.addToStack(this.totalPot);
-
-        for(var i = 0; i < this.totalPlayers; i++){
-            this.players[i].setCurrMoneyInPot(0);
-        }
-
+    getCards(){
+        var cardPNGS = [];
+            for(var i = 0; i < this.communityCards.length; i++)
+                {
+                    var info = this.communityCards[i].cardToPNG();
+                    cardPNGS.push(info);
+                }
+            return cardPNGS;
     }
-
+    
     //sets all players moves to u (undefined, havent gone yet)
     clearMoves(){
         for(var i = 0; i <  this.totalPlayers; i++){
             this.players[i].setValTurn("undefined");
         }
     }
-
     //returns everyone in the hand (that isnt folded)
     getCurrPlayersInHand(){
         var playersInHand = [];
         for(var i = 0; i <  this.totalPlayers; i++){
-             if(this.players[i].getValTurn() != "folded" && this.players[i].getValTurn() != "fold" && this.players[i].getValTurn()){
+             if(this.players[i].getValTurn() != "folded" && this.players[i].getValTurn() != "fold" && this.players[i].getValTurn() != "autofolded"){
                 playersInHand.push(this.players[i]);
             }
         }
         return playersInHand;
     }
 
-    //clear the game for another hand
-    clearGame(){
-        this.clearMoves();
-        this.totalPot = 0;
-        this.needsDeal = true;
-    }
-
+    
 
 
     //Player turn options

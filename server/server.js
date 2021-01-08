@@ -16,6 +16,7 @@ const player = require("./player");
 const playerHand = require('./playerHand');
 const DeckOfCards = require("./DeckOfCards");
 const { pokerGame, getAllPlayers} = require("./pokerGame");
+const pokerRound = require("./pokerRound");
 
 
 
@@ -116,7 +117,6 @@ io.on('connection', (sock) => {
   });
 
 
-  var interval = null;
   //setTimeout(function(){ playermove = "f"; }, turnTime);
 
   //when someone hits start game
@@ -137,36 +137,36 @@ io.on('connection', (sock) => {
     //the game has begun so the game goes in here
     theGame.shuffle();
     theGame.dealHands();
-   
+    let player = theGame.getCurrentUser(sock.id);
     //Sending clients the players hands
     io.to(theGame.getGameID()).emit('hands', theGame.returnDisplayHands());
 
-    var currPlayer = theGame.getPlayerFromSockID(sock);
-    currPlayer.setTurn(true);
+    var currPokerRound = new pokerRound(theGame, player);
+    currPokerRound.getNextThing();
 
-
-    interval = setTimeout(function(){
-        currPlayer.setValTurn("autofolded");
-        console.log(currPlayer.getName() + " autofolded ")
-
-     }, theGame.getTurnTime());
+    
   
   });
 
 
 
   //when they submit their turn
-  
   sock.on('playerTurn', (turnVariable) =>{
     let theGame = getGameFromSockID(sock.id);
     let player = theGame.getCurrentUser(sock.id);
-
+    let currPokerRound = theGame.getCurrPokerRound();
+    //it is their turn -- allow stuff to happen
     if(player.getTurn()){
-      player.setValTurn(turnVariable);
+      //emit everything, getnextThing
+      currPokerRound.getNextThing();
 
-      clearInterval(interval);
 
+      io.to(theGame.getGameID()).emit('hands', theGame.returnDisplayHands());
+      io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
+      io.to(theGame.getGameID()).emit('dealBoard', theGame.getCards());
     }
+
+    //it is not their turn
     else{
       sock.emit('message', "Shut the fuck up retard, play on your turn");
       console.log(player.getValTurn());
