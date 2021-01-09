@@ -142,7 +142,10 @@ io.on('connection', (sock) => {
     io.to(theGame.getGameID()).emit('hands', theGame.returnDisplayHands());
 
     var currPokerRound = new pokerRound(theGame, player);
-    currPokerRound.getNextThing();
+    theGame.setCurrPokerRound(currPokerRound);
+    currPokerRound.startTimeOut(player);
+
+
 
     
   
@@ -162,7 +165,7 @@ io.on('connection', (sock) => {
 
 
       io.to(theGame.getGameID()).emit('hands', theGame.returnDisplayHands());
-      io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
+      io.to(theGame.getGameID()).emit('roomUsers', {room: player.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
       io.to(theGame.getGameID()).emit('dealBoard', theGame.getCards());
     }
 
