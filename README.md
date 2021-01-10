@@ -7,11 +7,11 @@
  - github
  
  ### Thomas Trenholme
- - website
- -github
+ - [website]
+ - github
  
  ### Nik Milcevski (Graphics)
- -website
+ - website
 
 
 
