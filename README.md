@@ -1,9 +1,35 @@
-# 831poker
-Node.JS, socket.io and express poker
+
+![](https://github.com/sevdeawesome/831poker/blob/main/art/new_logo.jpg)
+
+## Authors:
+ ### Severin Field
+ - website
+ - github
+ 
+ ### Thomas Trenholme
+ - website
+ -github
+ 
+ ### Nik Milcevski (Graphics)
+ -website
 
 
-Made by Thomas Trenholme, Severin Field
+
+## Technologies Used
+- JavaScript
+- Node JS
+- HTML5, CSS3
+- Socket IO
+- Express
+- Nodemon
+- Github/git
+- Adobe Illustrator
 
 
+## Design Patterns:
+ - Factory 
+ - Singleton
+ 
+ 
 
-Designs by Nik Milcevski
+
