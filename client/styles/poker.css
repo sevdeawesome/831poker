@@ -18,6 +18,7 @@ fff7de
 body{
     background-color: #0D0D0D;
 }
+
 /* START GAME BUTTON */
 #generate{
     font-family: theFont, 'Archivo Black', sans-serif;
@@ -39,6 +40,12 @@ body{
     color:rgba(255,255,255, .75);
     background: none !important;
     
+}
+#tableLogo{
+    position: fixed;
+    top: 0;
+    width: 25%;
+    left: 0;
 }
 /* console */
 #consolediv{
@@ -171,13 +178,7 @@ li{
     min-height: 600px;
     position: relative;
 }
-#tableLogo{
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 400px;
-    bottom: 340px;
-}
+
 #potSize{
     color:white;
     font-size: 50px;
