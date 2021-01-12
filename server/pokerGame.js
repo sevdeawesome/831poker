@@ -182,6 +182,13 @@ class pokerGame{
     clearGame(){
         this.clearPlayersInfo();
         this.increaseDealerPosition();
+        this.deck = new DeckOfCards();
+        this.deck.shuffle();
+        this.deck.shuffle();
+        this.deck.shuffle();
+        this.deck.shuffle();
+
+        
         this.hand = null;
         
         

@@ -85,6 +85,11 @@ class pokerHand
            console.log("hand over");
            this.emitEverything();
            this.handComplete = true;
+
+           //creates a new game in 5 seconds
+           this.io.to(this.theGame.getGameID()).emit('consoleLog', "A new hand is starting in 5 seconds");
+           this.theGame.clearGame();
+           this.handComplete = true;
        }
 
        //If there are players left to act before the initial raiser, take their turn (when it gets to the intial raiser again, betting round is over)
@@ -144,7 +149,12 @@ class pokerHand
            {
                 var winner = this.getWinner();
                 
+
+                //emit the winner string
+                this.io.to(this.theGame.getGameID()).emit("consoleLog", "\n \n" + winner.getName() + " has won the pot of: $ " + this.moneyInPot)
+
                 console.log(winner.getName() + "has won the pot of: $" + this.moneyInPot);
+
                 //Clears all players Money in pot values, clears all turn vals and sets them all to undefined, and moves the dealer Index up by one for the next hand.
                 this.emitEverything();
                 winner.addToStack(this.moneyInPot);
@@ -259,7 +269,7 @@ class pokerHand
         }
         else if(valTurn == "call")
         {
-            if(this.getCurrBet() == this.getCurrPlayer().getCurrMoneyInPot() && this.preflop)
+            if(this.getCurrBet() == this.getCurrPlayer().getCurrMoneyInBettingRound() && this.preflop)
             {
                 this.io.to(this.currPlayer.getSock()).emit('consoleLog', "You cannot call. You're big blind dummy");
                 return false;
@@ -394,6 +404,7 @@ class pokerHand
     //Helper functions
 
     emitEverything(){
+        //[[playernames], [stacksizes], [isTurn], [currMoneyInBettingRound], [allHands] (for showHand Functionality)]
         this.io.to(this.theGame.getGameID()).emit('hands', this.theGame.returnDisplayHands());
         this.io.to(this.theGame.getGameID()).emit('roomUsers', {room: this.theGame.getGameID(), users: this.theGame.getAllNames(), stacksizes: this.theGame.getAllStackSizes()});
         this.io.to(this.theGame.getGameID()).emit('dealBoard', this.getCardPNGs());

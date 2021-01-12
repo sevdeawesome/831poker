@@ -16,21 +16,28 @@ fff7de
 
 */
 body{
-    background-color: #fff7de;
+    background-color: #0D0D0D;
 }
 /* START GAME BUTTON */
 #generate{
-    font-family: 'Archivo Black', sans-serif;
+    font-family: theFont, 'Archivo Black', sans-serif;
     background: none;
-    border: 3px solid black;
-    font-size: 40px;
+    text-transform: uppercase;
+    outline: none !important;
+    border: none !important;
+    font-size: 40px !important;
     transition: background-color 0.2s ease-out;
-    padding: 5px;
-    margin: 20px;
+    color: white;
+
+    
+}
+#generate:focus{
+    outline: none;
 }
 #generate:hover{
     cursor: pointer;
-    background-color: #6B3934;
+    color:rgba(255,255,255, .75);
+    background: none !important;
     
 }
 /* console */
@@ -46,45 +53,92 @@ body{
     overflow: auto;
     color: red;
 }
-
+/* ACTION BUTTONS */
+#actionbuttons{
+    margin-left: 30%;
+    bottom: 0;
+    position: fixed;
+}
+#actionbuttons input{
+    background: None;
+    color: white;
+    font-size: 70px;
+    width: 300px;
+    margin-bottom: 10px;
+}
+.actionbuttons{
+    color: white;
+    font-family: theFont;
+    font-size: 70px;
+    display: inline;
+    background: none;
+    outline: none;
+    border: none;
+    text-transform: uppercase;
+}
+.actionbuttons:hover{
+    color:rgba(255,255,255, .75);
+    cursor: pointer;
+}
 /* CHAT */
 #chatdiv{
-    width: 25%;
     position:fixed;
     left:0px;
     bottom:0px;
-    margin-bottom: 30px;
-    border: 1px solid black;
+    width: 25%;
+    margin: 40px;
+    margin-bottom: 60px;
     font-family: 'Source Code Pro', monospace;
+
+}
+#chat{
+    padding-top: 15px;
+}
+#innerchatdiv{
+    background: white;
+    border-radius: 25px;
     padding: 10px;
-    background-color: rgba(0,0,0, .2);
+    padding-bottom: 1px;
+
+}
+.tab{
+    margin-left: 10px;
+    z-index: -1 !important;
+    position: relative;
     
+}
+.tabcontent{
+    z-index: 999;
+}
+.tablinks{
+    font-size: 20px;
+    font-family: theFont;
+    background: grey;
+    border-radius: 9px;
+    padding: 10px;
+    margin-bottom: -10px;
+    border: none;
+    outline: none;
+}
+.tablinks:hover{
+    cursor: pointer;
+}
+.active{
+    background-color: white;
 }
 #chatdiv ul{
     max-height:200px;
     overflow: auto;
 }
-#chatdiv button{
-    background: none;
-    border: 1px solid black;
-    outline: none;
-    font-family: monospace;
-    transition: background-color 0.2s ease-out;
-    font-weight: bold;
-    font-size: 20px;
-}
-#chatdiv button:hover{
-    background-color: #6B3934;
-    cursor: pointer;
-}
+
+
 #chatdiv input{
+    font-family: theFont;
     background: none;
+    font-size: 25px;
     height: 22px;
     outline: none;
-    border-top: none;
-    border-right: none;
-    border-left: none;
-    border-bottom: 2px solid black;
+    border: none;
     margin: 4px;
 }
 
@@ -95,8 +149,8 @@ body{
     right: 0;
     top: 0;
     color: red;
-    
 }
+
 #timer{
     font-size: large;
 }
@@ -106,7 +160,14 @@ li{
 
 /* TABLE */
 #theTable{
-    background-image: radial-gradient(#121713 60%, #fff7de 50% );
+    background-image: url("../img/table.png");
+    /* border: 20px solid white;
+    min-height: 600px;
+    width: 80%;
+    border-radius: 10%; */
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: 7em;
     min-height: 600px;
     position: relative;
 }
@@ -120,6 +181,7 @@ li{
 #potSize{
     color:white;
     font-size: 50px;
+    font-family: theFont;
 }
 #theBoard li{
     display:inline-block;
@@ -129,7 +191,16 @@ li{
     position: absolute;
     bottom: 0;
     left: 50%;
-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+#lobby{
+    font-family: theFont;
+    color: white;
+    position: fixed;
+    margin-left: 2%;
+    z-index: 99;
+    font-size: 30px;
+    bottom: -15px;
 }
 .boardCard{
     width: 80px;
@@ -137,10 +208,30 @@ transform: translateX(-50%);
 .hidden{
     display: none;
 }
+/* OTHER PLAYERS */
+.player{
+    background-color: white;
+    position: relative;
+    display: inline-block;
+    margin-top: -100px;
+    border-radius: 25px;
+}
+/* CARDS */
 .opponentCards{
-    width: 50px;
+    width: 40px;
 }
 
 #card1, #card2{
-    width: 200px;
+    width: 140px;
+    
+}
+.glow{
+    box-shadow: gold 0px 5px 15px;
+    border-radius: 5px;
+}
+.leftTilt{
+    transform: rotate(-7deg);
+}
+.rightTilt{
+    transform: rotate(7deg);
 }

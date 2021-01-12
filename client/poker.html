@@ -25,18 +25,39 @@ Bootstrap CSS import:
 
 -->
 
-<title>Poker</title>
+<title>831 Poker</title>
 </head>
 <body>
 
-<center>
-  <button id="generate">Begin Game</button>
-</center>
+  <center><button id="generate">Begin Game</button>
+    </center>
 
-<br>
 <center>
-  
+  <!-- TABLE START -->
 <div id="theTable">
+  <!-- PLAYERS AROUND TABLE START -->
+  <div id="players">
+    <ul id="playersList">
+      <li class="player">
+        <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
+        <p>Name <br> 2000</p>
+      </li>
+      <li class="player">
+        <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
+        <p>Name <br> 2000</p>
+     
+      </li>
+      <li class="player">
+        <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
+        <p>Name <br> 2000</p>
+      </li>
+      <li class="player">
+        <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
+        <p>Name <br> 2000</p>
+      </li>
+    </ul>
+  </div>
+  <!-- PLAYERS AROUND TABLE END -->
   <ul  id="theBoard">
     <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li>
   </ul>
@@ -44,49 +65,76 @@ Bootstrap CSS import:
   <br> <h4 id="potSize"></h4> <br>
   <center>
     <div id="myCards">
-      <img id="card1" src="img/blue_back.png">
-      <img id="card2" src="img/blue_back.png">
+      <img id="card1" class="leftTilt" src="img/blue_back.png">
+      <img id="card2" class="rightTilt" src="img/blue_back.png">
     </div>
   </center>
 </div>
 </center>
+<!-- TABLE END -->
 
-<div id="consolediv">
 
-<ul id="console">
+
+<div id="actionbuttons">
   
-</ul>
-
+  <form id="poker-form" type="submit">
+    <button value="check" id="checkbutton" class="actionbuttons">Check</button>
+    <button value="call" id="callbutton" class="actionbuttons">Call</button>
+    <input value="raise" id="raise" autocomplete="off" title="raise" type="number"/><button id="raisebutton" class="actionbuttons">Raise</button>
+    
+    <button class="actionbuttons" value="fold" id="foldbutton">Fold</button>
+    <!-- <button id="toggleStraddle">Straddle</button> -->
+  </form>
 </div>
+
+
+
+<!-- CHAT -->
 
 <div id="chatdiv">
-<ul id="events">
-  
-</ul>
+  <div class="tab">
+    <button id="chattabbutton" class="tablinks active" onclick="openCity(event, 'chatbox')">CHAT</button><button class="tablinks" onclick="openCity(event, 'consolebox')">CONSOLE</button>
+  </div>
 
-  <form id="chat-form">
-    <input id="chat" autocomplete="off" title="chat"/><button id="say">Say</button>
-  </form>
-  <br>
+
+  <div id="innerchatdiv">
+ 
+  <div id="chatbox" class="tabcontent">
+    <ul id="events">
+  
+    </ul>
+    <form id="chat-form">
+      <hr>
+      <input id="chat" autocomplete="off" title="chat" placeholder="SAY SOMETHING BASED"/>
+      </form>
+  </div>
+  <div id="consolebox" class="tabcontent">
+    <ul id="console">
+  
+    </ul>
+  </div>
+
+
+  
 
   <h5 id="timer"></h5>
-<form id="poker-form" type="submit">
-  <button value="check" id="checkbutton" >Check</button>
-  <button value="call" id="callbutton">Call</button><br>
-  <input value="raise" id="raise" autocomplete="off" title="raise" type="number"/><button id="raisebutton">Raise</button><br>
-  
-  <button value="fold" id="foldbutton">Fold</button>
-  <!-- <button id="toggleStraddle">Straddle</button> -->
-</form>
-</div>
 
-<br>
+</div>
+</div>
+<!--CHAT END-->
+
+<!-- LOBBY BEGIN -->
+<h2 id="lobby">Lobby <span id="roomName"></span></h2>
+<!-- LOBBY END -->
 
 
  <div id="usersinRoom">
-  <h2>Users In Lobby <span id="roomName"></span>: </h2>
-  
-  <ul id="userList"></ul>
+  <ul id="userList">
+    <li >
+      HIIII
+      <img src="img/blue_back.png">
+    </li>
+  </ul>
  </div>
 
 </body>
@@ -97,4 +145,6 @@ Bootstrap CSS import:
 <script src="/socket.io/socket.io.js"></script>
 <script src="scripts/functions.js"></script>
 <script src="scripts/index.js"></script>
+<script src="scripts/poker.js"></script>
+
 </html>

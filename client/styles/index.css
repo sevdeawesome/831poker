@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+@font-face {
+    font-family: theFont;
+    src: url(NONK.ttf);
+  }
+
 /*
 Source Code Font //
 font-family: 'Source Code Pro', monospace;
@@ -10,7 +15,15 @@ font-family: 'Archivo Black', sans-serif;
 Colors:
 //black green:
 121713
+#131E15
 color: cmky(53%, 41%, 51%, 85%);
+
+GREEN TABLE
+#131E15
+
+BLACK GREY
+#0D0D0D
+
 
 white yellow: 
 color: cmyk(0%, 3%, 13%, 0%);

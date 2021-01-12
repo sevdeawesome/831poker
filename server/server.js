@@ -21,7 +21,6 @@ const handEvaluator = require("./handEvaluator");
 
 
 
-
 //server setup
 const app = express();
 const clientPath = `${__dirname}/../client`;
