@@ -65,10 +65,9 @@ sock.on('yourTurn', (turnTime) => {
   yourTurn = true;
   //writeEvent(turnTime);
   writeConsoleEvent("You have " + turnTime/1000 + " seconds to take your turn until folded");
-  writeEvent("POOPER");
   timeOut = setTimeout(function(){
     sock.emit('playerTurn', "autoFold");
-    writeConsoleEvent("You have been autofolded");
+    writeConsoleEvent("Time has run out, you have been auto check/folded.");
     clearInterval(timeRemainingOnScreen);
     timer.innerText = '';
     yourTurn = false;
@@ -79,7 +78,6 @@ sock.on('validOption', () => {
 
   clearTimeout(timeOut);
   clearInterval(timeRemainingOnScreen);
-  writeEvent("Timeout on autoFold has been cleared");
   timer.innerText = '';
   yourTurn = false;
 });

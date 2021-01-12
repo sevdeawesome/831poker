@@ -16,6 +16,7 @@ class pokerGame{
         this.smallBlind = 10;
         this.bigBlind = 20;
         this.hand = null;
+        this.handNumber = 0;
     }
     newHand()
     {
@@ -159,108 +160,40 @@ class pokerGame{
         
     }
 
+    increaseDealerPosition()
+    {
+        this.dealerIdx += 1;
+    }
+
 
     //deal the flop/turn/river depending on whats already been dealt
 
-    //show the winner and give them their rightfully owned money
-    dealWin(){
-        var winner = this.getWinner();
-        winner.addToStack(this.totalPot);
-
-        for(var i = 0; i < this.totalPlayers; i++){
-            this.players[i].setCurrMoneyInPot(0);
-        }
-
-    }
-
     //sets all players moves to u (undefined, havent gone yet)
     
-    clearMoves(){
-        for(var i = 0; i <  this.totalPlayers; i++){
-            this.players[i].setValTurn("undefined");
+    clearPlayersInfo(){
+        for(var i = 0; i < this.players.length; i++){
+            this.players[i].resetInfo();
         }
     }
     
     
 
-    //clear the game for another hand
+    //clear the game for another hand, and starts the next hand in 5 seconds
     clearGame(){
-        this.clearMoves();
-        this.totalPot = 0;
-        this.needsDeal = true;
+        this.clearPlayersInfo();
+        this.increaseDealerPosition();
+        this.hand = null;
+        
+        
+        this.handNumber += 1;
+        var self = this;
+
+        setTimeout(function() {
+
+            self.newHand();
+        }, 5000);
+
     }
-
-
-
-    //Player turn options
-    
-    //Player turn options
-    
-    //Player turn options
-    
-    //Player turn options
-
-    // playerRaise(player, raiseamt){
-    //      //IMPLEMENT: takes money, puts in pot, updates all stacksizes, updates pot
-
-
-    //     //  if(player.getValTurn() > (player.getStackSize() - player.getCurrMoneyInPot())){
-    //     //     io.to(theGame.getGameID()).emit('message', player.getName() + ", you do not have enough money to raise that");
-    //     //     player.setValTurn("u");
-
-    //     //   }
-    //     //   else{
-    //     //     var raiseAmt = Number(player.getValTurn());
-    //     //     theGame.setCurrBet(player.getValTurn());
-    //     //     theGame.addToPot(raiseAmt);
-    //     //     player.setCurrMoneyInPot(player.getValTurn());
-    //     //     io.to(theGame.getGameID()).emit('message', player.getName() + ", raised " + player.getValTurn());
-    //     //     io.to(theGame.getGameID()).emit('potSize', theGame.getTotalPot());
-    //     //   }
-    // }
-    // playerFold(player){
-    //     io.to(theGame.getGameID()).emit('message', player.getName() + " has folded ");
-    // }
-    // playerCheck(player){
-    //     // if(theGame.getCurrBet() > 0){
-    //     //     player.setValTurn("u");
-    //     //     io.to(theGame.getGameID()).emit('message', player.getName() + ", you cannot check when there is a raise ");
-
-    //     //   }
-
-    //     //   else{
-    //     //    io.to(theGame.getGameID()).emit('message', player.getName() + " has checked ");
-    //     //   }
-    // }
-    // playerCall(player){
-    //     // if(theGame.getCurrBet() > 0 && ( (player.getStackSize() - player.getCurrMoneyInPot()) > theGame.getCurrBet())){
-    //     //     io.to(theGame.getGameID()).emit('message', player.getName() + " has called ");
-    //     //     theGame.addToPot(Number(theGame.getCurrBet() - player.getCurrMoneyInPot()));
-    //     //     player.subtractFromStack(theGame.getCurrBet() - player.getCurrMoneyInPot());
-    //     //     player.setCurrMoneyInPot(theGame.getCurrBet());
-    //     //     io.to(player.getRoom()).emit('roomUsers', {room: player.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
-    //     //     io.to(theGame.getGameID()).emit('message', "Pot size is: " + theGame.getCurrMoneyInPot());
-    //     //     io.to(theGame.getGameID()).emit('potSize', theGame.getTotalPot());
-
-    //     //     //IMPLEMENT put money in pot
-    //     //   }
-    //     //   else{
-    //     //     player.setValTurn("u");
-    //     //     io.to(theGame.getGameID()).emit('message', player.getName() + ", you have insufficient funds");
-
-    //     //     //IMPLEMENT split pot
-    //     //   }
-    // }
-    // playerAutoFold(player){
-    //     // if(theGame.getCurrBet() == 0){
-    //     //     io.to(theGame.getGameID()).emit('message', player.getName() + " auto check ");
-    //     //     player.setValTurn("a");
-    //     //   }
-    //     //   else{
-    //     //     io.to(theGame.getGameID()).emit('message', player.getName() + " has folded by autofolder bot ");
-    //     //     player.setValTurn("f");
-    //     //   }
-    // }
 
 }
 

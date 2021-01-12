@@ -164,18 +164,25 @@ io.on('connection', (sock) => {
   
   sock.on('playerTurn', (turnVariable) =>{
     
+    var turnVar = turnVariable;
     let theGame = getGameFromSockID(sock.id);
     let hand = theGame.returnHand();
     let player = hand.getCurrPlayer();
 
     //if valid option
-    if(hand.validOption(turnVariable))
+    if(hand.validOption(turnVar))
     {
       //console.log("Player has chosen a valid option");
       io.to(player.getSock()).emit('validOption');
-      player.setValTurn(turnVariable);
+      player.setValTurn(turnVar);
+      //Changes player to check if they autofolded where they could have checked
+      if( (player.getValTurn() == "autoFold" && hand.getCurrBet() == 0) || (player.getValTurn() == "autoFold" && hand.getCurrBet() == player.getCurrMoneyInPot() ) )
+      {
+        player.setValTurn("check");
+        turnVar = "check";
+      }
       console.log(player.getName() + " has chosen action: " + player.getValTurn());
-      hand.playerTurn(turnVariable);
+      hand.playerTurn(turnVar);
     }
     else{
       sock.emit()

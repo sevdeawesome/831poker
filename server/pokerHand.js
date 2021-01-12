@@ -46,6 +46,11 @@ class pokerHand
 
    runHand()
    {
+       for(var i = 0; i < this.playersInHand.length; i++)
+       {
+            console.log(this.playersInHand[i].getName() + " value is: " + this.playersInHand[i].getValTurn());
+       }
+       console.log("Curr money in pot is: " + this.moneyInPot);
        this.collectSmallBlind();
        this.collectBigBlind();
        this.currBet = this.theGame.getBB();
@@ -138,12 +143,15 @@ class pokerHand
            else
            {
                 var winner = this.getWinner();
-                winner.addToStack(this.moneyInPot);
+                
                 console.log(winner.getName() + "has won the pot of: $" + this.moneyInPot);
                 //Clears all players Money in pot values, clears all turn vals and sets them all to undefined, and moves the dealer Index up by one for the next hand.
                 this.emitEverything();
+                winner.addToStack(this.moneyInPot);
+                this.io.to(this.theGame.getGameID()).emit('consoleLog', "A new hand is starting in 5 seconds");
                 this.theGame.clearGame();
                 this.handComplete = true;
+                
            }
        }
        
@@ -170,9 +178,13 @@ class pokerHand
     }
     else if(valTurn == "call")
     {
-        this.getCurrPlayer().minusFromStack(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInPot());
-        this.moneyInPot += Number(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInPot());
+        this.getCurrPlayer().minusFromStack(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInBettingRound());
+        this.moneyInPot += Number(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInBettingRound());
+        this.getCurrPlayer().addCurrMoneyInBettingRound(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInBettingRound());
+
+        //For split pots
         this.getCurrPlayer().addCurrMoneyInPot(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInPot());
+        
 
         this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getCurrPlayer().getName() + " has called. " );
     }
@@ -187,11 +199,16 @@ class pokerHand
     {
         
         this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getCurrPlayer().getName() + " has raised to: " + valTurn);
-        this.getCurrPlayer().minusFromStack(valTurn - this.getCurrPlayer().getCurrMoneyInPot());
-        this.getCurrPlayer().addCurrMoneyInPot(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInPot());
-        this.moneyInPot += Number(valTurn);
+        this.getCurrPlayer().minusFromStack(valTurn - this.getCurrPlayer().getCurrMoneyInBettingRound());
+        
         this.currBet = Number(valTurn);
+        
+        this.moneyInPot += Number(valTurn - this.getCurrPlayer().getCurrMoneyInBettingRound());
+        this.getCurrPlayer().addCurrMoneyInBettingRound(valTurn - this.getCurrPlayer().getCurrMoneyInBettingRound());
         this.initialRaiser = this.getCurrPlayer();
+
+        //For split pots
+        this.getCurrPlayer().addCurrMoneyInPot(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInPot());
     }
 
     //Special Case: It is preflop and everyone checked to the bigBlind and he checked, doesnt move to the next player so the betting round ends.
@@ -204,6 +221,8 @@ class pokerHand
     }
     //Move to the next player
     else{
+
+    console.log(this.getCurrPlayer().getName() + " has $: " + this.getCurrPlayer().getCurrMoneyInPot() + " and now current pot is: " + this.getPot());
     console.log(this.currPlayer.getName() + "'s turn is over. Now moving to " + this.getNextPlayer(this.getCurrPlayer()).getName() +"'s turn.");
     this.currPlayer = this.getNextPlayer(this.getCurrPlayer());
 
@@ -240,7 +259,7 @@ class pokerHand
         }
         else if(valTurn == "call")
         {
-            if(this.getCurrBet() == this.getCurrPlayer().getCurrMoneyInPot())
+            if(this.getCurrBet() == this.getCurrPlayer().getCurrMoneyInPot() && this.preflop)
             {
                 this.io.to(this.currPlayer.getSock()).emit('consoleLog', "You cannot call. You're big blind dummy");
                 return false;
@@ -255,6 +274,11 @@ class pokerHand
         else if(valTurn == "fold" || valTurn == "autoFold")
         {
             return true;
+        }
+        //Does not let big blind fold preflop, also if there is no current bet, just sets the players value to check 
+        else if(valTurn == "autoFold")
+        {
+
         }
         //Bet/Raise
         else
@@ -292,6 +316,7 @@ class pokerHand
 
        this.getNextPlayer(this.dealer).minusFromStack(this.theGame.getSB());
        this.getNextPlayer(this.dealer).addCurrMoneyInPot(this.theGame.getSB());
+       this.getNextPlayer(this.dealer).setCurrMoneyInBettingRound(this.theGame.getSB());
        this.moneyInPot += this.theGame.getSB();
       //console.log("Collected small blind from: " + this.getNextPlayer(this.dealer).getName());
        this.io.to(this.getNextPlayer(this.dealer).getSock()).emit('consoleLog', "You are assigned small blind and " + this.theGame.getSB() + " has been taken from your stack");
@@ -301,6 +326,7 @@ class pokerHand
    {
        this.getNextPlayer(this.getNextPlayer(this.dealer)).minusFromStack(this.theGame.getBB());
         this.getNextPlayer(this.getNextPlayer(this.dealer)).addCurrMoneyInPot(this.theGame.getBB());
+        this.getNextPlayer(this.getNextPlayer(this.dealer)).setCurrMoneyInBettingRound(this.theGame.getBB());
        this.moneyInPot += this.theGame.getBB();
        //console.log("Collected big blind from: " + this.getNextPlayer(this.getNextPlayer(this.dealer)).getName());
        this.io.to(this.getNextPlayer(this.getNextPlayer(this.dealer)).getSock()).emit('consoleLog', "You are assigned big blind and " + this.theGame.getBB() + " has been taken from your stack");
@@ -458,6 +484,7 @@ class pokerHand
     clearMoves(){
         for(var i = 0; i <  this.playersInHand.length; i++){
             this.playersInHand[i].setValTurn("undefined");
+            this.playersInHand[i].setCurrMoneyInBettingRound(0);
         }
 
     }

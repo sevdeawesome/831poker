@@ -10,9 +10,9 @@ class player {
     this.name = name;
     this.handsWon = 0;
     this.room = room;
-    this.isTurn = false;
     this.valTurn = "undefined";
     this.currMoneyInPot = 0;
+    this.currMoneyInBettingRound = 0;
   }
 
   minusFromStack(num)
@@ -32,6 +32,15 @@ class player {
   getCurrMoneyInPot(){
     return this.currMoneyInPot;
   }
+  getCurrMoneyInBettingRound(){
+    return this.currMoneyInBettingRound;
+  }
+  addCurrMoneyInBettingRound(num){
+    this.currMoneyInBettingRound += num;
+  }
+  setCurrMoneyInBettingRound(num){
+    this.currMoneyInBettingRound = num;
+  }
   setValTurn(a){
     this.valTurn = a;
     console.log(this.getName() + "'s valTurn is now: " + this.getValTurn());
@@ -46,12 +55,6 @@ class player {
   {
     this.name = name;
   }
-  getTurn(){
-    return this.isTurn;
-  }
-  setTurn(a){
-    this.isTurn = a;
-  }
   getName()
   {
     return this.name;
@@ -61,6 +64,11 @@ class player {
   }
   getHand(){
     return this.hand;
+  }
+  resetInfo(){
+    this.currMoneyInPot = 0;
+    this.valTurn = "undefined";
+    this.currMoneyInBettingRound = 0;
   }
 
   setHand(c1, c2){
