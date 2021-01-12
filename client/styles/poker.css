@@ -33,6 +33,20 @@ body{
     background-color: #6B3934;
     
 }
+/* console */
+#consolediv{
+    width: 25%;
+    position: fixed;
+    float: right;
+    right: 0px;
+    color: red;
+}
+#console{
+    max-height: 200px;
+    overflow: auto;
+    color: red;
+}
+
 /* CHAT */
 #chatdiv{
     width: 25%;
@@ -82,6 +96,9 @@ body{
     top: 0;
     color: red;
     
+}
+#timer{
+    font-size: large;
 }
 li{
     list-style-type: none;

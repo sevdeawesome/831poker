@@ -16,7 +16,8 @@ const player = require("./player");
 const playerHand = require('./playerHand');
 const DeckOfCards = require("./DeckOfCards");
 const { pokerGame, getAllPlayers} = require("./pokerGame");
-const pokerRound = require("./pokerRound");
+const pokerHand = require("./pokerHand");
+const handEvaluator = require("./handEvaluator");
 
 
 
@@ -117,10 +118,13 @@ io.on('connection', (sock) => {
   });
 
 
+  var interval = null;
   //setTimeout(function(){ playermove = "f"; }, turnTime);
 
   //when someone hits start game
   sock.on('startGame', () =>{
+
+    //console.log(io.sockets.clients());
     var theGame = null;
     for(var i = 0; i < listOfPokerRooms.length; i++)
     {
@@ -130,51 +134,54 @@ io.on('connection', (sock) => {
         listOfPokerRooms[i].setBegun(true);
       }
     }
+
     console.log("Someone has started the game in: " + theGame.getGameID());
     io.to(theGame.getGameID()).emit('gameBegun');
     theGame.setBegun(true);
 
     //the game has begun so the game goes in here
-    theGame.shuffle();
-    theGame.dealHands();
-    let player = theGame.getCurrentUser(sock.id);
-    //Sending clients the players hands
-    io.to(theGame.getGameID()).emit('hands', theGame.returnDisplayHands());
-
-    var currPokerRound = new pokerRound(theGame, player);
-    theGame.setCurrPokerRound(currPokerRound);
-    currPokerRound.startTimeOut(player);
-
-
-
     
+
+    //Starting a new poker hand:
+    let handOfPoker = theGame.newHand();
+
+
+    //io.to(theGame.getPlayerAt(theGame.getDealerIdx()).getSock()).emit('yourTurn', theGame.getTurnTime());
+    //theGame.getPlayerAt(theGame.getDealerIdx()).setValTurn
+
+   
+    //Sending clients the players hands
+  
+
+    //var currPlayer = theGame.getPlayerFromSockID(sock);
+   // currPlayer.setTurn(true);
   
   });
 
 
 
   //when they submit their turn
+  
   sock.on('playerTurn', (turnVariable) =>{
+    
     let theGame = getGameFromSockID(sock.id);
-    let player = theGame.getCurrentUser(sock.id);
-    let currPokerRound = theGame.getCurrPokerRound();
-    //it is their turn -- allow stuff to happen
-    if(player.getTurn()){
-      //emit everything, getnextThing
-      currPokerRound.getNextThing();
+    let hand = theGame.returnHand();
+    let player = hand.getCurrPlayer();
 
-
-      io.to(theGame.getGameID()).emit('hands', theGame.returnDisplayHands());
-      io.to(theGame.getGameID()).emit('roomUsers', {room: player.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
-      io.to(theGame.getGameID()).emit('dealBoard', theGame.getCards());
+    //if valid option
+    if(hand.validOption(turnVariable))
+    {
+      //console.log("Player has chosen a valid option");
+      io.to(player.getSock()).emit('validOption');
+      player.setValTurn(turnVariable);
+      console.log(player.getName() + " has chosen action: " + player.getValTurn());
+      hand.playerTurn(turnVariable);
     }
-
-    //it is not their turn
     else{
-      sock.emit('message', "Shut the fuck up retard, play on your turn");
-      console.log(player.getValTurn());
+      sock.emit()
     }
     
+
   });
 //inside connect end ->
 });
@@ -204,3 +211,11 @@ server.on('error', (err) =>{
 server.listen(8080, () => {
   console.log("Server started on port 8080");
 });
+
+
+module.exports = {
+  getio: function() {
+
+    return io;
+}
+}

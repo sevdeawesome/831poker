@@ -11,12 +11,13 @@ class player {
     this.handsWon = 0;
     this.room = room;
     this.isTurn = false;
-    this.valTurn = "u";
+    this.valTurn = "undefined";
     this.currMoneyInPot = 0;
   }
-  substractFromStack(num)
+
+  minusFromStack(num)
   {
-    this.stackSize-= num;
+    this.stackSize-=num;
   }
   getStackSize(){
     return this.stackSize;
@@ -25,14 +26,15 @@ class player {
   {
     this.stackSize+=num;
   }
-  setCurrMoneyInPot(a){
-    this.currMoneyInPot = a;
+  addCurrMoneyInPot(a){
+    this.currMoneyInPot += a;
   }
   getCurrMoneyInPot(){
     return this.currMoneyInPot;
   }
   setValTurn(a){
     this.valTurn = a;
+    console.log(this.getName() + "'s valTurn is now: " + this.getValTurn());
   }
   getValTurn(){
     return this.valTurn;

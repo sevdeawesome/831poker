@@ -16,6 +16,22 @@ function writeEvent(text)
   getChat.scrollTop = getChat.scrollHeight;
 };
 
+function writeConsoleEvent(text)
+{
+  //the ul createElement
+  const parent = document.querySelector("#console");
+
+  //the li getElementBy
+  const el = document.createElement('li');
+  el.innerHTML = text;
+
+  parent.appendChild(el);
+
+  //scroll to bottom on receive
+  var getChat = document.querySelector("#console");
+  getChat.scrollTop = getChat.scrollHeight;
+};
+
 
 //sending chats
 function onFormSubmitted(e)
@@ -73,7 +89,7 @@ function showHand(arr){
       var str2 = "img/" + handArr[1]
       document.getElementById("card1").src=str1;
       document.getElementById("card2").src=str2;
-      writeEvent(arr[i].hand);
+      //writeEvent(arr[i].hand);
 
     }
   }
@@ -97,20 +113,53 @@ function showBoard(arr){
 //sending a turn to the server
 function sendCheck(e)
 {
+  if(yourTurn)
+  {
   e.preventDefault();  //prevent from reloading page
   sock.emit('playerTurn', "check");
+
+  }
+  else{
+    e.preventDefault();  //prevent from reloading page
+    writeEvent("Not your turn");
+  }
 }
 function sendCall(e){
+  if(yourTurn)
+  {
   e.preventDefault();  //prevent from reloading page
   sock.emit('playerTurn', "call");
+
+  }
+  else{
+    e.preventDefault();  //prevent from reloading page
+    writeEvent("Not your turn");
+  }
 }
 function sendFold(e){
+  if(yourTurn)
+  {
   e.preventDefault();  //prevent from reloading page
   sock.emit('playerTurn', "fold");
+
+  }
+  else{
+    e.preventDefault();  //prevent from reloading page
+    writeEvent("Not your turn");
+  }
 }
 function sendRaise(e){
-  e.preventDefault();  //prevent from reloading page
-  const raiseInput = document.querySelector("#raise");
-  const raiseVal = raiseInput.value;
-  sock.emit('playerTurn', raiseVal);
+  if(yourTurn)
+  {
+    e.preventDefault();  //prevent from reloading page
+    const raiseInput = document.querySelector("#raise");
+    const raiseVal = raiseInput.value;
+    sock.emit('playerTurn', raiseVal);
+
+  }
+  else{
+    e.preventDefault();  //prevent from reloading page
+    writeEvent("Not your turn");
+  }
+  
 }

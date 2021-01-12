@@ -15,7 +15,11 @@ sock.on('message', (text) => {
   // var chatMessages = document.querySelector
   //n chatMessages.scrollTop = chatMessages.scrollHeight;
 });
-writeEvent("Welcome to Sevnet Poker");
+//writeEvent("Welcome to Sevnet Poker");
+
+sock.on('consoleLog', (text) =>{
+  writeConsoleEvent(text);
+})
 
 //Takes room info and list of users from the server and displays them
 sock.on('roomUsers', ({room, users, stacksizes}) => {
@@ -43,6 +47,43 @@ sock.on('potSize', (num) => {
   pot.innerText = '';
   pot.innerText = "Current Pot: " + num;
 });
+
+
+var timeOut;
+var yourTurn = false;
+var timer = document.getElementById("timer");
+var timeRemainingOnScreen;
+//When client recieves message 'yourTurn', starts a timer that 
+sock.on('yourTurn', (turnTime) => {
+  var count = turnTime / 1000;
+  timeRemainingOnScreen = setInterval(function(){
+    count -= 1;
+    timer.innerText = count;
+  }, 1000);
+
+  //timer.innerText = "Time left:";
+  yourTurn = true;
+  //writeEvent(turnTime);
+  writeConsoleEvent("You have " + turnTime/1000 + " seconds to take your turn until folded");
+  writeEvent("POOPER");
+  timeOut = setTimeout(function(){
+    sock.emit('playerTurn', "autoFold");
+    writeConsoleEvent("You have been autofolded");
+    clearInterval(timeRemainingOnScreen);
+    timer.innerText = '';
+    yourTurn = false;
+  }, turnTime);
+});
+
+sock.on('validOption', () => {
+
+  clearTimeout(timeOut);
+  clearInterval(timeRemainingOnScreen);
+  writeEvent("Timeout on autoFold has been cleared");
+  timer.innerText = '';
+  yourTurn = false;
+});
+
 
 
 

@@ -1,6 +1,6 @@
 const DeckOfCards = require('./DeckOfCards');
 const player = require('./player');
-const handEvaluator = require('./handEvaluator');
+const pokerHand = require('./pokerHand');
 
 //const DeckOfCards = require('./DeckOfCards');
 
@@ -11,23 +11,35 @@ class pokerGame{
         this.gameID = gameID;  //room
         this.begun = false;  //has the game already started
         this.deck = new DeckOfCards();
-        this.communityCards = [];
-        this.totalPot = Number(0);
-        this.needsDeal = true;
         this.turnTime = 10000;
-        this.currPlayer = null;
-        this.currPokerRound = null;
+        this.dealerIdx = 0;
+        this.smallBlind = 10;
+        this.bigBlind = 20;
+        this.hand = null;
     }
-    setCurrPokerRound(pokerRound){
-        this.currPokerRound = pokerRound;
+    newHand()
+    {
+        this.hand = new pokerHand(this);
     }
-    getCurrPokerRound(){
-        return this.currPokerRound;
+    returnHand()
+    {
+        return this.hand;
     }
+    getSB()
+    {
+        return this.smallBlind;
+    }
+    getBB()
+    {
+        return this.bigBlind;
+    }
+    getDealerIdx(){
+        return this.dealerIdx;
+    }
+    
     getTurnTime(){
         return this.turnTime;
     }
-
     getDeck(){
         return this.deck;
     }
@@ -71,11 +83,12 @@ class pokerGame{
         }
     }
 
+
     getAllPlayers(){
         return this.players;
     }
-    getPlayersLength(){
-        return this.players.length;
+    getTotalPlayers(){
+        return this.totalPlayers;
     }
     getAllNames(){
         var names = [];
@@ -96,33 +109,6 @@ class pokerGame{
     getGameID()
     {
         return this.gameID;
-    }
-
-    getWinner()
-    {
-        let handEval = new handEvaluator(this.communityCards);
-        var stillIn = this.getCurrPlayersInHand();
-        var currWinner = stillIn[0];
-		var stillNull;
-		for(var i = 0; i < stillIn.length; i++)
-		{
-			if(stillNull)
-			{
-				if(stillIn[i] != null)
-				{
-					stillNull = false;
-					currWinner = stillIn[i];
-				}
-			}
-			else if(stillIn[i] != null)
-			{
-				if(handEval.returnBestHand(currWinner.getHand(), stillIn[i].getHand()) == stillIn[i].getHand())
-				{
-					currWinner = stillIn[i];
-				}
-			}
-		}
-		return currWinner;
     }
     
     checkIfSockIDisInGame(sockID)
@@ -159,7 +145,6 @@ class pokerGame{
         {
             this.players[i].setHand(this.deck.deal(), this.deck.deal());
         }
-        
     }
 
     returnDisplayHands(){
@@ -174,106 +159,37 @@ class pokerGame{
         
     }
 
-    dealFlop(){
-        for(var j = 0; j < 3; j++){
-            this.communityCards[j] = this.deck.deal();
-            console.log("flop card dealt");
-        }
-        
-        var cardPNGS = [];
-        for(var i = 0; i < this.communityCards.length; i++)
-        {
-            var info = this.communityCards[i].cardToPNG();
-            cardPNGS.push(info);
-        }
-        return cardPNGS;
-    }
-    dealTurn(){
-        
-        this.communityCards[3] = this.deck.deal();
-        console.log("turn card dealt")
-        
-        var cardPNGS = [];
-        for(var i = 0; i < this.communityCards.length; i++)
-        {
-            var info = this.communityCards[i].cardToPNG();
-            cardPNGS.push(info);
-        }
-        return cardPNGS;
-
-    }
-    dealRiver(){
-       
-        this.communityCards[4] = this.deck.deal();
-        console.log("river card dealth");
-        this.needsDeal = false;
-        var cardPNGS = [];
-        for(var i = 0; i < this.communityCards.length; i++)
-        {
-            var info = this.communityCards[i].cardToPNG();
-            cardPNGS.push(info);
-        }
-        return cardPNGS;
-    }
-    getNeedsDeal(){
-        return this.needsDeal;
-    }
 
     //deal the flop/turn/river depending on whats already been dealt
-    deal(){
-        if(this.communityCards.length == 0){
-            return this.dealFlop();
-        }
-        else if(this.communityCards.length == 3)
-        {
-            return this.dealTurn();
-        }
-        else if(this.communityCards.length == 4){
-            return this.dealRiver();
-        }
-        
-        else{
-            var cardPNGS = [];
-            for(var i = 0; i < this.communityCards.length; i++)
-                {
-                    var info = this.communityCards[i].cardToPNG();
-                    cardPNGS.push(info);
-                }
-            this.needsDeal = false;
-            return cardPNGS;
-            
+
+    //show the winner and give them their rightfully owned money
+    dealWin(){
+        var winner = this.getWinner();
+        winner.addToStack(this.totalPot);
+
+        for(var i = 0; i < this.totalPlayers; i++){
+            this.players[i].setCurrMoneyInPot(0);
         }
 
     }
 
-    getCards(){
-        var cardPNGS = [];
-            for(var i = 0; i < this.communityCards.length; i++)
-                {
-                    var info = this.communityCards[i].cardToPNG();
-                    cardPNGS.push(info);
-                }
-            return cardPNGS;
-    }
-    
     //sets all players moves to u (undefined, havent gone yet)
+    
     clearMoves(){
         for(var i = 0; i <  this.totalPlayers; i++){
             this.players[i].setValTurn("undefined");
         }
     }
-    //returns everyone in the hand (that isnt folded)
-    getCurrPlayersInHand(){
-        var playersInHand = [];
-        for(var i = 0; i <  this.totalPlayers; i++){
-             if(this.players[i].getValTurn() != "folded" && this.players[i].getValTurn() != "fold" && this.players[i].getValTurn() != "autofolded"){
-                playersInHand.push(this.players[i]);
-            }
-        }
-        return playersInHand;
+    
+    
+
+    //clear the game for another hand
+    clearGame(){
+        this.clearMoves();
+        this.totalPot = 0;
+        this.needsDeal = true;
     }
 
-    
 
 
     //Player turn options
