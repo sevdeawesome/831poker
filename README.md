@@ -3,6 +3,8 @@
 
 
 ## Authors: <[Severin Field](https://github.com/sevdeawesome)>, <[Thomas Trenholme](https://github.com/thomastrenholme)>
+
+### Designs from [Nik Milcevski](https://www.newgrafik.us/)
  
 
 
