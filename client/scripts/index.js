@@ -23,7 +23,6 @@ sock.on('consoleLog', (text) =>{
 
 //Takes room info and list of users from the server and displays them
 sock.on('roomUsers', ({room, users, stacksizes}) => {
-  outputUsers(users, stacksizes);
   outputRoom(room);
 } );
 
@@ -85,7 +84,9 @@ sock.on('validOption', () => {
   yourTurn = false;
 });
 
-
+sock.on("roomPlayers", (roomPlayers) =>{
+  createPlayers(roomPlayers);
+});
 
 
 document.querySelector("#chat-form").addEventListener('submit', onFormSubmitted);  //send chat messae

@@ -114,7 +114,9 @@ class pokerHand
                 this.dealFlop();
                 //sets the current player, Tells current player to act it is their turn, and clears the current bet for the next round, also clears the actions of the players in the hand (sets them all to undefined)
                 this.currBet = 0; 
-                this.currPlayer = this.getNextPlayer(this.dealer); 
+                console.log("flop being dealt, curr player is: " + this.currPlayer.getName());
+                this.currPlayer = this.getNextPlayer(this.theGame.getAllPlayers()[this.dealerIdx]); 
+                console.log("flop being dealt, curr player is: " + this.currPlayer.getName());
                 this.initialRaiser = null;
                 this.clearMoves();
                 
@@ -331,7 +333,7 @@ class pokerHand
     }
     //Move to the next player
     else{
-
+    this.currPlayer.setTurn(false);
     console.log(this.currPlayer.getName() + "'s turn is over. Now moving to " + this.getNextPlayer(this.getCurrPlayer()).getName() +"'s turn.");
     this.currPlayer = this.getNextPlayer(this.getCurrPlayer());
 
@@ -341,6 +343,7 @@ class pokerHand
     this.emitEverything();
     this.updateHand();
     }
+   
    }
 
    validOption(valTurn)
@@ -422,6 +425,7 @@ class pokerHand
 
    callTurnOnNextPlayer()
    {
+        
        console.log("Curr Player is: " + this.getCurrPlayer().getName() + " and valTurn == " + this.getCurrPlayer().getValTurn());
        if(this.getCurrPlayer().isAllIn())
        {
@@ -437,7 +441,10 @@ class pokerHand
        }
        else{
            console.log("THIRD OPTION REACHED");
-        this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
+            
+           this.getCurrPlayer().setTurn(true);
+           this.emitEverything();
+           this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
        }
    }
 
@@ -534,6 +541,7 @@ class pokerHand
         this.io.to(this.theGame.getGameID()).emit('roomUsers', {room: this.theGame.getGameID(), users: this.theGame.getAllNames(), stacksizes: this.theGame.getAllStackSizes()});
         this.io.to(this.theGame.getGameID()).emit('dealBoard', this.getCardPNGs());
         this.io.to(this.theGame.getGameID()).emit('potSize', this.getPot());
+        this.io.to(this.theGame.getGameID()).emit('roomPlayers', this.theGame.emitPlayers());
     }
     getPlayers()
     {
@@ -598,6 +606,8 @@ class pokerHand
 
         if(this.currPlayer == this.initialRaiser)
         {
+            this.currPlayer.setTurn(false);
+            this.emitEverything();
             console.log("No more players left to act, reached initial raiser, returning false with " + this.currPlayer.getName() + "'s turn");
             return false;
         }
@@ -628,6 +638,7 @@ class pokerHand
     updatePlayersLeftInHand(){
 
         var playersStillLeft= [];
+        
         for(var i = 0; i <  this.playersInHand.length; i++){
              if(this.playersInHand[i].getValTurn() != "fold" && this.playersInHand[i].getValTurn() != "autoFold"){
                 playersStillLeft.push(this.playersInHand[i]);
@@ -669,6 +680,9 @@ class pokerHand
                 }
             return cardPNGS;
     }
+
+
+   
     
 
 

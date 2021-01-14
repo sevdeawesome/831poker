@@ -25,7 +25,7 @@ body{
     text-transform: uppercase;
     outline: none !important;
     border: none !important;
-    font-size: 40px !important;
+    font-size: 2.8vw !important;
     transition: background-color 0.2s ease-out;
     color: white;
 
@@ -46,12 +46,12 @@ body{
     position: fixed;
     float: right;
     right: 0px;
-    color: red;
+    color: #9C001B;
 }
 #console{
-    max-height: 200px;
+    max-height: 21.3vh;
     overflow: auto;
-    color: red;
+    color: #9C001B;
 }
 /* ACTION BUTTONS */
 #actionbuttons{
@@ -62,19 +62,21 @@ body{
 #actionbuttons input{
     background: None;
     color: white;
-    font-size: 70px;
-    width: 300px;
-    margin-bottom: 10px;
+    font-size: 3.64vw;
+    width: 15.6vw;
+    margin-bottom: 1vh;
+    margin-left: 20px;
 }
 .actionbuttons{
     color: white;
     font-family: theFont;
-    font-size: 70px;
+    font-size: 3.64vw;
     display: inline;
     background: none;
     outline: none;
     border: none;
     text-transform: uppercase;
+    margin-left: 20px;
 }
 .actionbuttons:hover{
     color:rgba(255,255,255, .75);
@@ -101,6 +103,21 @@ body{
     padding-bottom: 1px;
 
 }
+#chatdiv ul{
+    max-height:21vh;
+    overflow: auto;
+}
+
+
+#chatdiv input{
+    font-family: theFont;
+    background: none;
+    font-size: 1.302vw;
+    height: 22px;
+    outline: none;
+    border: none;
+    margin: 4px;
+}
 .tab{
     margin-left: 10px;
     z-index: -1 !important;
@@ -111,7 +128,7 @@ body{
     z-index: 999;
 }
 .tablinks{
-    font-size: 20px;
+    font-size: 1.04vw;
     font-family: theFont;
     background: grey;
     border-radius: 9px;
@@ -126,33 +143,16 @@ body{
 .active{
     background-color: white;
 }
-#chatdiv ul{
-    max-height:200px;
-    overflow: auto;
-}
 
-
-#chatdiv input{
-    font-family: theFont;
-    background: none;
-    font-size: 25px;
-    height: 22px;
-    outline: none;
-    border: none;
-    margin: 4px;
-}
 
 /* USERLIST */
-#usersinRoom{
-    width: 25%;
-    position: fixed;
-    right: 0;
-    top: 0;
-    color: red;
-}
 
 #timer{
-    font-size: large;
+     font-size: 1.3vw;
+    font-family: theFont; 
+    color: #9C001B;
+    margin: 0;
+    padding: 8px;
 }
 li{
     list-style-type: none;
@@ -172,11 +172,10 @@ li{
     position: relative;
 }
 #tableLogo{
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    position: fixed;
+    top: 0;
+    left: -3vw;
     width: 400px;
-    bottom: 340px;
 }
 #potSize{
     color:white;
@@ -208,25 +207,65 @@ li{
 .hidden{
     display: none;
 }
-/* OTHER PLAYERS */
+/* OTHER PLAYERS 
+<li class="player">
+        <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
+        <p>Name <br> <span class="opponentStackSize">2000</span><hr><span class="opponentMoneyInPot">200</span></p>
+      </li>*/
 .player{
-    background-color: white;
+    
     position: relative;
     display: inline-block;
     margin-top: -100px;
     border-radius: 25px;
+    font-size: 16px;
+    font-family: theFont;
+    margin-right: 100px;
+    margin-left: 100px;
+    padding: 0;
+}
+.playerp{
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    margin-top: -10px;
+    padding-top: 5px;
+    text-transform: uppercase;
+}
+.opponentName{
+    color:#9C001B !important;
+}
+.opponentMoneyInPot{
+    color: white !important;
+    float: right;
+    margin-right: 10px;
+    font-size: 20px;
+}
+.dealer .playerp{
+    background-color: goldenrod !important;
+}
+.dealerchip{
+    display: none;
+}
+.dealer .dealerchip{
+   
+   display: block;
+    padding: 10px;
 }
 /* CARDS */
 .opponentCards{
-    width: 40px;
+    width: 50px;
+    margin: 0;
+    padding: 0;
 }
 
 #card1, #card2{
     width: 140px;
     
 }
-.glow{
-    box-shadow: gold 0px 5px 15px;
+.glow .playerp{
+    box-shadow: #9C001B 0px 5px 15px;
     border-radius: 5px;
 }
 .leftTilt{

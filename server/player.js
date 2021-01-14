@@ -14,6 +14,20 @@ class player {
     this.currMoneyInPot = 0;
     this.currMoneyInBettingRound = 0;
     this.allIn = false;
+    this.isTurn = false;
+    this.hasHand = true;
+  }
+  setHasHand(a){
+    this.hasHand = a;
+  }
+  getHasHand(){
+    this.hasHand;
+  }
+  setTurn(a){
+    this.isTurn = a;
+  }
+  getTurn(){
+    return this.isTurn;
   }
   isAllIn(){
     return this.allIn;

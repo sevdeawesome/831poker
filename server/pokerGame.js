@@ -193,7 +193,35 @@ class pokerGame{
     }
     
     
+    emitPlayers(){
+        /*
+        [dealerPosition, {name, stacksize, currMoneyInBettingRound, isFolded, card1, card2, isShown1, isShown2, isStraddled, isTurn}]
+        */
 
+        var returnArr = [];
+        var dealerIndex = this.dealerIdx%this.getTotalPlayers();
+        returnArr.push(dealerIndex);
+        var currPerson;
+        for(var i = 0; i < this.getTotalPlayers(); i++){
+            currPerson = this.getPlayerAt(i);
+            var holeCard1;
+            var holeCard2;
+            if(currPerson.getHand() == null){
+                holeCard1 = "blue_back.png";
+                holeCard2 = "blue_back.png"
+            }
+            else{
+                holeCard1 = currPerson.getHand().getHoleCard1().cardToPNG();
+                holeCard2 = currPerson.getHand().getHoleCard2().cardToPNG();
+            }
+            
+            returnArr.push({name: currPerson.getName(), stack: currPerson.getStackSize(), moneyIn: currPerson.getCurrMoneyInBettingRound(), 
+            card1: holeCard1, card2: holeCard2, 
+            valTurn: currPerson.getValTurn(), isShown1: false, isShown2: false, isStraddled: false, isTurn: currPerson.getTurn()
+            });
+        }
+        return  returnArr;
+    }
     //clear the game for another hand, and starts the next hand in 5 seconds
     clearGame(){
         this.clearPlayersInfo();

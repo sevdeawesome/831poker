@@ -28,7 +28,7 @@ Bootstrap CSS import:
 <title>831 Poker</title>
 </head>
 <body>
-
+  <img id="tableLogo" src="styles/img/logo-file.png">
   <center><button id="generate">Begin Game</button>
     </center>
 
@@ -40,28 +40,16 @@ Bootstrap CSS import:
     <ul id="playersList">
       <li class="player">
         <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
-        <p>Name <br> 2000</p>
+        <p>Name <br> <span class="opponentStackSize">2000</span><hr><span class="opponentMoneyInPot">200</span></p>
       </li>
-      <li class="player">
-        <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
-        <p>Name <br> 2000</p>
-     
-      </li>
-      <li class="player">
-        <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
-        <p>Name <br> 2000</p>
-      </li>
-      <li class="player">
-        <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
-        <p>Name <br> 2000</p>
-      </li>
+      
     </ul>
   </div>
   <!-- PLAYERS AROUND TABLE END -->
   <ul  id="theBoard">
     <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li>
   </ul>
-  <img id="tableLogo" src="styles/img/logo-file.png">
+  
   <br> <h4 id="potSize"></h4> <br>
   <center>
     <div id="myCards">
@@ -105,7 +93,7 @@ Bootstrap CSS import:
     </ul>
     <form id="chat-form">
       <hr>
-      <input id="chat" autocomplete="off" title="chat" placeholder="SAY SOMETHING BASED"/>
+      <input id="chat" autocomplete="off" title="chat" placeholder="SAY SOMETHING BASED"/><h5 id="timer"></h5>
       </form>
   </div>
   <div id="consolebox" class="tabcontent">
@@ -117,7 +105,7 @@ Bootstrap CSS import:
 
   
 
-  <h5 id="timer"></h5>
+  
 
 </div>
 </div>
@@ -127,7 +115,7 @@ Bootstrap CSS import:
 <h2 id="lobby">Lobby <span id="roomName"></span></h2>
 <!-- LOBBY END -->
 
-
+<!-- 
  <div id="usersinRoom">
   <ul id="userList">
     <li >
@@ -135,7 +123,7 @@ Bootstrap CSS import:
       <img src="img/blue_back.png">
     </li>
   </ul>
- </div>
+ </div> -->
 
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
