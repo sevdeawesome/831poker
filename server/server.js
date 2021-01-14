@@ -80,7 +80,7 @@ io.on('connection', (sock) => {
     theGame.playerJoin(user);
 
     //Send users client the room name and info so it can display
-    //io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
+    io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
 
     io.to(user.getRoom()).emit('message', theGame.getCurrentUser(sock.id).getName() + " is now spectating...");
 
@@ -98,7 +98,7 @@ io.on('connection', (sock) => {
        io.to(theGame.getGameID()).emit("message",  theGame.getCurrentUser(sock.id).getName() + " has left the channel")
        console.log(theGame.getCurrentUser(sock.id).getName() + " has left the channel");
        theGame.playerLeave(sock.id);
-       //emit everything here TODO
+       io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
       }
     }
       

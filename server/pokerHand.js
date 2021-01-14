@@ -530,11 +530,8 @@ class pokerHand
 
     emitEverything(){
         //[[playernames], [stacksizes], [isTurn], [currMoneyInBettingRound], [allHands] (for showHand Functionality)]
-        var arr = [];
-
-        //this.io.to(this.theGame.getGameID()).emit('handInfo', arr);
         this.io.to(this.theGame.getGameID()).emit('hands', this.theGame.returnDisplayHands());
-      //  this.io.to(this.theGame.getGameID()).emit('roomUsers', {room: this.theGame.getGameID(), users: this.theGame.getAllNames(), stacksizes: this.theGame.getAllStackSizes()});
+        this.io.to(this.theGame.getGameID()).emit('roomUsers', {room: this.theGame.getGameID(), users: this.theGame.getAllNames(), stacksizes: this.theGame.getAllStackSizes()});
         this.io.to(this.theGame.getGameID()).emit('dealBoard', this.getCardPNGs());
         this.io.to(this.theGame.getGameID()).emit('potSize', this.getPot());
     }
