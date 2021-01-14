@@ -22,10 +22,10 @@ sock.on('consoleLog', (text) =>{
 })
 
 //Takes room info and list of users from the server and displays them
-sock.on('roomUsers', ({room, users, stacksizes}) => {
-  outputUsers(users, stacksizes);
-  outputRoom(room);
-} );
+// sock.on('roomUsers', ({room, users, stacksizes}) => {
+//   outputUsers(users, stacksizes);
+//   outputRoom(room);
+// } );
 
 sock.on('gameBegun', () => {
   // var button = document.getElementById("generate");

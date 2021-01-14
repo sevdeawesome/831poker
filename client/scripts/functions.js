@@ -58,17 +58,17 @@ const {username, stacksize, lobbyname} = Qs.parse(location.search, {
 });
 
 
-function outputUsers(users, stacksizes){
-  userList.innerHTML = '';
-  var stacksizecounter = 0;
-  users.forEach(user=>{
-    const li = document.createElement('li');
-    li.innerHTML = user + "<br> stacksize:" +  stacksizes[stacksizecounter++] + "<br><img class='opponentCards' src='../img/blue_back.png'></img> <img class='opponentCards' src='../img/blue_back.png'></img>";
-    //li.innerText = user;
-    userList.appendChild(li);
+// function outputUsers(users, stacksizes){
+//   userList.innerHTML = '';
+//   var stacksizecounter = 0;
+//   users.forEach(user=>{
+//     const li = document.createElement('li');
+//     li.innerHTML = user + "<br> stacksize:" +  stacksizes[stacksizecounter++] + "<br><img class='opponentCards' src='../img/blue_back.png'></img> <img class='opponentCards' src='../img/blue_back.png'></img>";
+//     //li.innerText = user;
+//     userList.appendChild(li);
     
-  });
-}
+//   });
+// }
 
 function outputRoom(room){
   roomName.innerHTML = room;
