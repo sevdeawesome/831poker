@@ -10,8 +10,8 @@ class pokerHand
     this.io = require('./server').getio();
     this.theGame = game;
     this.communityCards = [];
-    this.playersInHand = this.theGame.getAllPlayers();
-    this.dealerIdx = this.theGame.getDealerIdx() % this.theGame.getTotalPlayers();
+    this.playersInHand = this.theGame.getEligiblePlayers();
+    this.dealerIdx = this.theGame.getDealerIdx() % this.playersInHand.length;
     this.dealer = this.getPlayers()[this.dealerIdx];
     this.bigBlind = this.getNextPlayer(this.getNextPlayer(this.dealer));
     //Player who raised/bet last
@@ -50,6 +50,9 @@ class pokerHand
        {
             console.log(this.playersInHand[i].getName() + " value is: " + this.playersInHand[i].getValTurn());
        }
+       //Runs the hand if game has 2 or more players
+       if(this.playersInHand.length > 1)
+       {
        console.log("Curr money in pot is: " + this.moneyInPot);
        this.collectSmallBlind();
        this.collectBigBlind();
@@ -67,6 +70,7 @@ class pokerHand
        //console.log(this.initialRaiser);
        //this.io.to(this.theGame.getPlayerAt(this.theGame.getDealerIdx()).getSock()).emit('yourTurn', this.theGame.getTurnTime());
        //var preFlopBets = bettingRound()
+       }
 
    }
 
@@ -81,6 +85,7 @@ class pokerHand
        if(this.getPlayers().length == 1)
        {
            this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getPlayers()[0].getName() +" has won the pot of: " + this.getPot());
+           this.io.to(this.theGame.getGameID()).emit('message', this.getPlayers()[0].getName() +" has won the pot of: " + this.getPot());
            this.getPlayers()[0].addToStack(this.moneyInPot);
            console.log("hand over");
            this.emitEverything();
@@ -99,7 +104,7 @@ class pokerHand
        {
            console.log("Keep on going more players need to act");
             this.io.to(this.theGame.getGameID()).emit('consoleLog', "It is " + this.getCurrPlayer().getName() +"'s turn");
-            this.io.to(this.currPlayer.getSock()).emit('yourTurn', this.theGame.getTurnTime());
+            this.callTurnOnNextPlayer();
        }
        //If there are no players left to act in the betting round, then the game needs to either deal the flop, turn, river, or get the winner of the hand at showdown.
        else{
@@ -114,7 +119,19 @@ class pokerHand
                 this.clearMoves();
                 
                 this.emitEverything();
-                this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
+                
+                //Deal cards slower if everyone is all in/ only one person can play
+                if(this.lessThanTwoCanPlay())
+                {
+                    var self = this;
+                    setTimeout(function() {
+                        self.callTurnOnNextPlayer();
+                    }, 2000);
+                }
+                else{
+                    this.callTurnOnNextPlayer();
+                }
+                //this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
                 this.flopDealt = true;
            }
            else if(this.turnDealt == false)
@@ -127,7 +144,19 @@ class pokerHand
                this.clearMoves();
                
                this.emitEverything();
-               this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
+               
+               //Deal cards slower if everyone is all in/ only one person can play
+               if(this.lessThanTwoCanPlay())
+               {
+                   var self = this;
+                   setTimeout(function() {
+                       self.callTurnOnNextPlayer();
+                   }, 2000);
+               }
+               else{
+                   this.callTurnOnNextPlayer();
+               }
+               //this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
                this.turnDealt = true;
            }
        
@@ -141,17 +170,52 @@ class pokerHand
                this.clearMoves();
 
                this.emitEverything();
-               this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
+               
+               //Deal cards slower if everyone is all in/ only one person can play
+               if(this.lessThanTwoCanPlay())
+               {
+                   var self = this;
+                   setTimeout(function() {
+                       self.callTurnOnNextPlayer();
+                   }, 2000);
+               }
+               else{
+                   this.callTurnOnNextPlayer();
+               }
+
+               //this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
                this.riverDealt = true;
            }
            //Get winner at showdown and award them the pot. Hand is now over.
            else
            {
-                var winner = this.getWinner();
+               /** 
+               var firstPlayerMoneyInPot = this.playersInHand[0].getCurrMoneyInPot();
+               var multiplePots = false;
+               var splitPots = [];
+                for(var i = 0; i < this.playersInHand.length; i++)
+                {
+                    if(this.playersInHand[i].getCurrMoneyInPot() != firstPlayerMoneyInPot)
+                    {
+                        if(splitPot1 == [null, null])
+                        {
+                            splitPot1 = [this.playersInHand[i].getName(), this.playersInHand[i].getCurrMoneyInPot()]
+                        }
+                        else if(splitPot2 == [null, null])
+                        {
+                            splitPot2 = 
+                        }
+                    }
+                } 
+                */
+                var handEval = new handEvaluator(this.communityCards);
+                var winner = this.getWinner(this.playersInHand);
                 
 
                 //emit the winner string
-                this.io.to(this.theGame.getGameID()).emit("consoleLog", "\n \n" + winner.getName() + " has won the pot of: $ " + this.moneyInPot)
+                this.io.to(this.theGame.getGameID()).emit("consoleLog", "\n \n" + winner.getName() + " has won the pot of: $ " + this.moneyInPot);
+                this.io.to(this.theGame.getGameID()).emit("consoleLog", "\n \n" + winner.getName() + " has won the pot of: $ " + this.moneyInPot + " with: " + handEval.evaluateHandForString(winner.getHand()));
+                this.io.to(this.theGame.getGameID()).emit("message", "" +winner.getName() + " has won the pot of: $ " + this.moneyInPot + " with: " + handEval.evaluateHandForString(winner.getHand()));
 
                 console.log(winner.getName() + "has won the pot of: $" + this.moneyInPot);
 
@@ -184,7 +248,10 @@ class pokerHand
        }
     if(valTurn == "check")
     {
-        this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getCurrPlayer().getName() + " has checked. " );
+        if(!this.lessThanTwoCanPlay())
+        {
+            this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getCurrPlayer().getName() + " has checked. " );
+        }
     }
     else if(valTurn == "call")
     {
@@ -197,13 +264,23 @@ class pokerHand
         
 
         this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getCurrPlayer().getName() + " has called. " );
+        if(this.getCurrPlayer().getStackSize() == 0)
+        {
+            this.getCurrPlayer().setAllIn();
+            this.getCurrPlayer().setValTurn("playerIsAllIn");
+            console.log(this.getCurrPlayer().getName() + " is now ALL IN");
+        }
     }
 
     else if(valTurn == "fold" || valTurn =="autoFold")
     {
         this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getCurrPlayer().getName() + " has folded. " );
     }
- 
+    else if(valTurn == "playerIsAllIn")
+    {
+        //Do nothing, move to the next player
+    }
+    
     //Raise/ bet section
     else
     {
@@ -219,6 +296,29 @@ class pokerHand
 
         //For split pots
         this.getCurrPlayer().addCurrMoneyInPot(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInPot());
+
+        if(this.getCurrPlayer().getStackSize() == 0)
+        {
+            this.getCurrPlayer().setAllIn();
+            this.getCurrPlayer().setValTurn("playerIsAllIn");
+            console.log(this.getCurrPlayer().getName() + " is now ALL IN");
+        }
+
+        //sets other players decisions to undefined as they can now act again
+
+        var currP = this.getCurrPlayer();
+        
+        currP = this.getNextPlayer(currP);
+
+        for(var i = 0; i < this.playersInHand.length; i++)
+        {
+            if(currP != this.getCurrPlayer())
+            {
+                currP.setValTurn("undefined");
+                currP = this.getNextPlayer(currP);
+                console.log("Made " + currP.getName() + "'s turn undefined");
+            }
+        }
     }
 
     //Special Case: It is preflop and everyone checked to the bigBlind and he checked, doesnt move to the next player so the betting round ends.
@@ -232,7 +332,6 @@ class pokerHand
     //Move to the next player
     else{
 
-    console.log(this.getCurrPlayer().getName() + " has $: " + this.getCurrPlayer().getCurrMoneyInPot() + " and now current pot is: " + this.getPot());
     console.log(this.currPlayer.getName() + "'s turn is over. Now moving to " + this.getNextPlayer(this.getCurrPlayer()).getName() +"'s turn.");
     this.currPlayer = this.getNextPlayer(this.getCurrPlayer());
 
@@ -285,6 +384,11 @@ class pokerHand
         {
             return true;
         }
+        else if(valTurn == "playerIsAllIn")
+        {
+            return true;
+            //Do nothing, move to the next player
+        }
         //Does not let big blind fold preflop, also if there is no current bet, just sets the players value to check 
         else if(valTurn == "autoFold")
         {
@@ -305,7 +409,7 @@ class pokerHand
                 return false;
             }
             //Try to bet more than their stack size
-            if(valTurn > this.getCurrPlayer().getStackSize())
+            if(valTurn > this.getCurrPlayer().getStackSize() - this.getCurrPlayer().getCurrMoneyInBettingRound())
             {
                 this.io.to(this.currPlayer.getSock()).emit('consoleLog', "Invalid bet. You cannot bet an amount greater than your stack size");
                 return false;
@@ -314,6 +418,27 @@ class pokerHand
         }
         
     
+   }
+
+   callTurnOnNextPlayer()
+   {
+       console.log("Curr Player is: " + this.getCurrPlayer().getName() + " and valTurn == " + this.getCurrPlayer().getValTurn());
+       if(this.getCurrPlayer().isAllIn())
+       {
+        this.io.to(this.getCurrPlayer().getSock()).emit('allIn');
+        console.log("THIS GUY IS ALL IN");
+       }
+       //If 1 or 0 players can still act in the hand, noone needs to take their turn, so it just auto checks them
+       else if((!(this.getCurrPlayer().getValTurn() == "undefined")) && this.lessThanTwoCanPlay())
+       {
+            this.getCurrPlayer().setValTurn("check");
+            console.log("Should skip turn and autoCheck this bib");
+            this.playerTurn("check");
+       }
+       else{
+           console.log("THIRD OPTION REACHED");
+        this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
+       }
    }
 
 
@@ -363,25 +488,25 @@ class pokerHand
         this.io.to(this.theGame.getGameID()).emit('consoleLog', "The River has been dealt");
     }
 
-    getWinner()
+    //Gets winner from an array of players ( allows you to put different arrays of players in the case of split pots)
+    getWinner(players)
     {
-        let handEval = new handEvaluator(this.communityCards);
-
-        var currWinner = this.playersInHand[0];
+        var handEval = new handEvaluator(this.communityCards);
+        var currWinner = players[0];
         
 
         //Broadcast to the room what everyone has
-        for(var i = 0; i < this.playersInHand.length; i++)
+        for(var i = 0; i < players.length; i++)
         {
-            console.log(this.playersInHand[i].getName() + " has " + (handEval.evaluateHandForString(this.playersInHand[i].getHand())));
-            this.io.to(this.theGame.getGameID()).emit('consoleLog', this.playersInHand[i].getName() + " has " + handEval.evaluateHandForString(this.playersInHand[i].getHand()) );
+            console.log(players[i].getName() + " has " + (handEval.evaluateHandForString(players[i].getHand())));
+            this.io.to(this.theGame.getGameID()).emit('consoleLog', players[i].getName() + " has " + handEval.evaluateHandForString(players[i].getHand()) );
         }
 
-        for(var i = 0; i < this.playersInHand.length; i++)
+        for(var i = 0; i < players.length; i++)
         {
-            if(handEval.returnBestHand(currWinner.getHand(), this.playersInHand[i].getHand()) == this.playersInHand[i].getHand())
+            if(handEval.returnBestHand(currWinner.getHand(), players[i].getHand()) == players[i].getHand())
             {
-                currWinner = this.playersInHand[i];
+                currWinner = players[i];
             }
         }
 
@@ -443,12 +568,31 @@ class pokerHand
         }
     }
 
+    lessThanTwoCanPlay()
+    {
+        var numPlayersNotAllIn = 0;
+        for(var i =0; i < this.playersInHand.length; i++)
+        {
+            if(!this.playersInHand[i].isAllIn())
+            {
+                numPlayersNotAllIn++;
+            }
+        }
+        if(numPlayersNotAllIn < 2)
+        {
+            return true;
+        }
+        return false;
+    }
+
     checkIfPlayersLeftToAct()
     {
+        
         var playersLeft = this.getPlayers();
         for(var i = 0; i < playersLeft.length; i++){
             if (playersLeft[i].getValTurn() == "undefined"){
                 return true;
+                
             }
         }
 
@@ -494,9 +638,25 @@ class pokerHand
 
     clearMoves(){
         for(var i = 0; i <  this.playersInHand.length; i++){
-            this.playersInHand[i].setValTurn("undefined");
-            this.playersInHand[i].setCurrMoneyInBettingRound(0);
-        }
+            if(this.playersInHand[i].isAllIn())
+            {
+                this.playersInHand[i].setValTurn("playerIsAllIn");
+            }
+            else{
+                if(this.lessThanTwoCanPlay())
+                {
+                    this.playersInHand[i].setValTurn("check");
+                }
+                else{
+                    this.playersInHand[i].setValTurn("undefined");
+                    this.playersInHand[i].setCurrMoneyInBettingRound(0);
+                }
+           
+            }
+
+            }
+            
+        
 
     }
 

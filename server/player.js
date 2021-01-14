@@ -13,8 +13,14 @@ class player {
     this.valTurn = "undefined";
     this.currMoneyInPot = 0;
     this.currMoneyInBettingRound = 0;
+    this.allIn = false;
   }
-
+  isAllIn(){
+    return this.allIn;
+  }
+  setAllIn(){
+    this.allIn = true;
+  }
   minusFromStack(num)
   {
     this.stackSize-=num;
@@ -69,6 +75,7 @@ class player {
     this.currMoneyInPot = 0;
     this.valTurn = "undefined";
     this.currMoneyInBettingRound = 0;
+    this.allIn = false;
   }
 
   setHand(c1, c2){

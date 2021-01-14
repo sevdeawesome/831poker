@@ -91,6 +91,18 @@ class pokerGame{
     getTotalPlayers(){
         return this.totalPlayers;
     }
+    getEligiblePlayers()
+    {
+        var ePlayers = [];
+        for(var i = 0; i < this.players.length; i++)
+        {
+            if(this.players[i].getStackSize() > 0)
+            {
+                ePlayers.push(this.players[i]);
+            }
+        }
+        return ePlayers;
+    }
     getAllNames(){
         var names = [];
         for(var i = 0; i < this.totalPlayers; i++)
@@ -140,13 +152,17 @@ class pokerGame{
     }
     
     
-    //give each player a playerHand object
+    //give each player in the hand a playerHand object
     dealHands(){
-        for(var i = 0; i < this.totalPlayers; i++)
+        for(var i = 0; i < this.getAllPlayers().length; i++)
         {
-            this.players[i].setHand(this.deck.deal(), this.deck.deal());
+            if(this.getAllPlayers()[i].getStackSize() != 0 )
+            {
+                this.getAllPlayers()[i].setHand(this.getDeck().deal(), this.getDeck().deal());
+            }   
         }
     }
+    
 
     returnDisplayHands(){
         var arr = [];

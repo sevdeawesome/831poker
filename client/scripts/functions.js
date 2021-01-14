@@ -79,6 +79,7 @@ function joinARoom(e){
 
 function showHand(arr){
 
+  var userInHand = false;
 
   for(var i = 0; i < arr.length; i++){
   
@@ -90,7 +91,12 @@ function showHand(arr){
       document.getElementById("card1").src=str1;
       document.getElementById("card2").src=str2;
       //writeEvent(arr[i].hand);
+      userInHand = true;
 
+    }
+    if(userInHand == false){
+      document.getElementById("card1").src="img/blue_back.png";
+      document.getElementById("card2").src="img/blue_back.png";
     }
   }
  
@@ -162,4 +168,7 @@ function sendRaise(e){
     writeEvent("Not your turn");
   }
   
+}
+function sendAllIn(){
+  sock.emit('playerTurn', "playerIsAllIn");
 }

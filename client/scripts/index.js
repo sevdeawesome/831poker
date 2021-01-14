@@ -48,6 +48,9 @@ sock.on('potSize', (num) => {
   pot.innerText = "Current Pot: " + num;
 });
 
+sock.on('allIn', () => {
+  sendAllIn();
+});
 
 var timeOut;
 var yourTurn = false;
