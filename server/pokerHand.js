@@ -114,9 +114,7 @@ class pokerHand
                 this.dealFlop();
                 //sets the current player, Tells current player to act it is their turn, and clears the current bet for the next round, also clears the actions of the players in the hand (sets them all to undefined)
                 this.currBet = 0; 
-                console.log("flop being dealt, curr player is: " + this.currPlayer.getName());
-                this.currPlayer = this.getNextPlayer(this.theGame.getAllPlayers()[this.dealerIdx]); 
-                console.log("flop being dealt, curr player is: " + this.currPlayer.getName());
+                this.currPlayer = this.getNextPlayer(this.dealer); 
                 this.initialRaiser = null;
                 this.clearMoves();
                 
@@ -236,6 +234,21 @@ class pokerHand
        //console.log("Current User is: " + this.currPlayer.getName());
        //this.io.to(this.currPlayer.getSock()).emit('yourTurn', this.theGame.getTurnTime());
     }
+
+    calculateAndAwardPots()
+    {
+
+        //Dead money
+        var deadMoney = 0;
+        for(var i = 0; i < this.theGame.getAllPlayers().length; i++)
+        {
+            if(this.playersInHand.includes(this.theGame.getAllPlayers()[i]))
+            {
+                console.log("This game includes: " + this.theGame.getAllPlayers()[i].getName());
+            }
+        }
+    }
+
     
 
         
@@ -277,6 +290,21 @@ class pokerHand
     else if(valTurn == "fold" || valTurn =="autoFold")
     {
         this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getCurrPlayer().getName() + " has folded. " );
+
+        //If player in dealer position folds, moves the dealer index one up because otherwise the splice will move them down one.
+        
+        if(this.getCurrPlayer() == this.dealer)
+        {
+            
+            var newDealer = this.dealer;
+            for(var i = 0; i < this.playersInHand.length - 1; i++)
+            {
+                newDealer = this.getNextPlayer(newDealer);
+            }
+            this.dealer = newDealer;
+            console.log("New dealer is: " + this.dealer.getName());
+        }
+
     }
     else if(valTurn == "playerIsAllIn")
     {

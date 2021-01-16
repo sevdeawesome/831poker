@@ -145,6 +145,8 @@ io.on('connection', (sock) => {
     //Starting a new poker hand:
     let handOfPoker = theGame.newHand();
 
+    
+
 
     //io.to(theGame.getPlayerAt(theGame.getDealerIdx()).getSock()).emit('yourTurn', theGame.getTurnTime());
     //theGame.getPlayerAt(theGame.getDealerIdx()).setValTurn
@@ -164,10 +166,12 @@ io.on('connection', (sock) => {
   
   sock.on('playerTurn', (turnVariable) =>{
     
+   
     var turnVar = turnVariable;
     let theGame = getGameFromSockID(sock.id);
     let hand = theGame.returnHand();
     let player = hand.getCurrPlayer();
+    hand.calculateAndAwardPots();
 
     //if valid option
     if(hand.validOption(turnVar))
