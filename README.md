@@ -23,7 +23,7 @@
 
 
 ## Design Patterns:
- - Factory 
+ - Factory (We started using factory in the pokerGame class to create hand rounds but ended up abandoning ship and writing code without a design pattern)
  - Singleton
  
  
