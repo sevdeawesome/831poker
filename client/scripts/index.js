@@ -1,6 +1,7 @@
-//write events when received from Server
+//your stacksize var
+var yourStack;
+var currPot = 0;
 
-//get their name and roomnumber and stack size
 
 const sock = io();
 
@@ -33,9 +34,6 @@ sock.on('gameBegun', () => {
 });
 
 
-sock.on('hands', (arr) => {
- showHand(arr);
-});
 
 sock.on('dealBoard', (arr) => {
   showBoard(arr);
@@ -44,7 +42,8 @@ sock.on('dealBoard', (arr) => {
 sock.on('potSize', (num) => {
   var pot = document.querySelector("#potSize");
   pot.innerText = '';
-  pot.innerText = "Current Pot: " + num;
+  pot.innerText = "Pot Size: " + num;
+  currPot = num;
 });
 
 sock.on('allIn', () => {
@@ -57,7 +56,12 @@ var timer = document.getElementById("timer");
 var timeRemainingOnScreen;
 //When client recieves message 'yourTurn', starts a timer that 
 sock.on('yourTurn', (turnTime) => {
+
+  //play sound
+  var audio = new Audio('sounds/yourTurn.mp3');
+  audio.play();
   var count = turnTime / 1000;
+
   timeRemainingOnScreen = setInterval(function(){
     count -= 1;
     timer.innerText = count;
@@ -88,6 +92,9 @@ sock.on("roomPlayers", (roomPlayers) =>{
   createPlayers(roomPlayers);
 });
 
+sock.on("audio", (audiotype) =>{
+  playAudio(audiotype);
+})
 
 document.querySelector("#chat-form").addEventListener('submit', onFormSubmitted);  //send chat messae
 document.getElementById("generate").addEventListener('click', startGame); //start game button

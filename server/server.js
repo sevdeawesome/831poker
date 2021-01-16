@@ -117,6 +117,13 @@ io.on('connection', (sock) => {
     
   });
 
+  sock.on('audio', (name) => {
+    var theGame = getGameFromSockID(sock.id);
+    io.to(theGame.getGameID()).emit("audio", name);
+
+    
+  });
+
 
   var interval = null;
   //setTimeout(function(){ playermove = "f"; }, turnTime);

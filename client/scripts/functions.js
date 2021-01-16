@@ -56,7 +56,7 @@ function startGame(){
 const {username, stacksize, lobbyname} = Qs.parse(location.search, {
   ignoreQueryPrefix: true
 });
-
+yourStack = stacksize;
 
 
 
@@ -89,6 +89,7 @@ function sendCheck(e)
   if(yourTurn)
   {
   e.preventDefault();  //prevent from reloading page
+  sock.emit('audio', "check");
   sock.emit('playerTurn', "check");
 
   }
@@ -101,18 +102,22 @@ function sendCall(e){
   if(yourTurn)
   {
   e.preventDefault();  //prevent from reloading page
+  sock.emit('audio', "raise");
   sock.emit('playerTurn', "call");
+  
 
   }
   else{
     e.preventDefault();  //prevent from reloading page
     writeEvent("Not your turn");
+    
   }
 }
 function sendFold(e){
   if(yourTurn)
   {
   e.preventDefault();  //prevent from reloading page
+  sock.emit('audio', "fold");
   sock.emit('playerTurn', "fold");
 
   }
@@ -136,36 +141,89 @@ function sendRaise(e){
   }
   
 }
-function showHand(arr){
 
-
-  
- 
-}
 function sendAllIn(){
   sock.emit('playerTurn', "playerIsAllIn");
 }
 
+function playAudio(name){
+  var audio = null;
+  if(name == "yourTurn"){
+    audio = new Audio('sounds/yourTurn.mp3');
+  }
+  else if(name == "check"){
+    audio = new Audio('sounds/check.mp3');
+  }
+  else if(name == "raise"){
+    audio = new Audio('sounds/raise.wav');
+  }
+  else{
+    audio = new Audio('sounds/fold.wav')
+  }
+  audio.play();
+}
+
+
+ 
 
 //shows all the other player objects, appends to #playersList
 function createPlayers(playerArr){
-  var dealerIndex = playerArr[0] + 1;
+  var dealerIndex = playerArr.shift();
   console.log(dealerIndex);
   var playersList = document.getElementById("playersList");
-
+  var yourIndex = 0;
   playersList.innerHTML = "";
 
-  for(var i = 1; i < playerArr.length; i++){
+  for(var j = 0; j < playerArr.length; j++){
+
+    var currPlayer = playerArr[j];
+    if(currPlayer.name == username){
+      yourIndex = j;
+      var str1 = "img/" + currPlayer.card1;
+      var str2 = "img/" + currPlayer.card2;
+      document.getElementById("card1").src=str1;
+      document.getElementById("card2").src=str2;
+
+      var myPlayer = document.getElementById("myPlayer");
+     
+      // myPlayer.className = "";
+      myPlayer.classList.add("dealer");
+      myPlayer.classList.add("youGlow");
+      yourStack = currPlayer.stack;
+      console.log(yourStack);
+      document.getElementById("myName").innerText = currPlayer.name;
+      document.getElementById("myStack").innerText = currPlayer.stack;
+      document.getElementById("myMoneyInPot").innerText = currPlayer.moneyIn;
+      if(j != dealerIndex){
+            myPlayer.classList.remove("dealer");
+      }
+      if(currPlayer.isTurn == false){
+        myPlayer.classList.remove("youGlow");
+      }
+    }
+  }
+
+  for(var i = yourIndex + 1; i < playerArr.length; i++){
     var currPlayer = playerArr[i];
+    appendPlayer(currPlayer, i, dealerIndex);
+  }
+  for(i = 0; i < yourIndex; i++){
+    var currPlayer = playerArr[i];
+    appendPlayer(currPlayer, i, dealerIndex);
+  }
+
+}
+
+function appendPlayer(currPlayer, i, dealerIndex){
+  var playersList = document.getElementById("playersList");
     //creates a new player element in the list
     var card1 = "img/blue_back.png";
     var card2 = "img/blue_back.png";
 
     //if(currPlayer.isFolded)
-    var stackSize = currPlayer.stack;
     console.log(currPlayer.valTurn);
     if(currPlayer.valTurn == "folded" || currPlayer.valTurn == "autoFold" || currPlayer.valTurn == "fold" ){
-       card1 = "img/folded_back.png";
+      card1 = "img/folded_back.png";
       card2 = "img/folded_back.png";
     }
     else if(currPlayer.hasHand == false){
@@ -181,29 +239,12 @@ function createPlayers(playerArr){
       liElement.classList.add("glow");
     }
     liElement.classList.add("player");
-  
+
     liElement.innerHTML = '<img class="leftTilt opponentCards" src="' + card1 + '">';
     liElement.innerHTML += '<img class="rightTilt opponentCards" src="' + card2 + '"><div class="playerp"><span class="opponentName"> ' + currPlayer.name 
     + '</span> <br> <span class="opponentStackSize">' +currPlayer.stack + 
-     '</span> </div> <span class="opponentMoneyInPot">' + currPlayer.moneyIn + '</span></div>' + '<img class="dealerchip" src="img/DEALER-CHIP.png">';
+    '</span> </div> <span class="opponentMoneyInPot">' + currPlayer.moneyIn + '</span></div>' + '<img class="dealerchip" src="img/DEALER-CHIP.png">';
     playersList.appendChild(liElement);
-    if(username != currPlayer.name){
-      
-    }
-    else{
-      var str1 = "img/" + currPlayer.card1;
-      var str2 = "img/" + currPlayer.card2;
-    //   if(currPlayer.valTurn == "folded" || currPlayer.valTurn == "autoFold" || currPlayer.valTurn == "fold" ){
-    //     str1 = "img/folded_back.png";
-    //     str2= "img/folded_back.png";
-    //  }
-     document.getElementById("card1").src=str1;
-    document.getElementById("card2").src=str2;
-     
-    }
-
-  }
-
 }
 /*
  [dealerPosition, {name, stacksize, currMoneyInBettingRound, isFolded, card1, card2, isShown1, isShown2, isStraddled, isTurn, hasHand}]

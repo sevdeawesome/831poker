@@ -40,6 +40,13 @@ body{
     background: none !important;
     
 }
+#menu{
+    position: fixed;
+    color: white;
+    right: 3vw;
+    font-size: 3.8vw;
+    top: 2.7vh;
+}
 /* console */
 #consolediv{
     width: 25%;
@@ -54,18 +61,91 @@ body{
     color: #9C001B;
 }
 /* ACTION BUTTONS */
+
+#raisebar{
+    background: white;
+    width: 70%;
+    margin-left: 200px;
+    border-radius: 25px;
+    overflow: hidden;
+    padding: 12px;
+}
+#raisebar button{
+    font-family: theFont;
+    font-size: 1.4vw;
+    background: none;
+    outline: none;
+    border: none;
+    margin: 3px;
+}
+#raiseBar1{
+    display: inline-block;
+    padding-top: 10px;
+}
+#raiseBar2{
+    display: inline-block;
+    float: right;
+}
+#rangeContainer{
+    background-color: #0d0d0d;
+    border-radius: 20px;
+}
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #0d0d0d;
+    outline: none;
+    border: none;
+    opacity: 1;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    padding: 5px;
+  }
+  
+  .slider:hover {
+    opacity: .7;
+  }
+  
+  .slider::-webkit-slider-thumb {
+      margin-top: 3px;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: white;
+    cursor: pointer;
+  }
+#raisebar button:hover{
+    cursor: pointer;
+    color:rgba(0,0,0, .75);
+}
+#raise{
+    font-family: theFont;
+    margin-right: 20px;
+}
 #actionbuttons{
-    margin-left: 30%;
+    right: 20px;
     bottom: 0;
     position: fixed;
 }
 #actionbuttons input{
     background: None;
-    color: white;
+    color: black;
+    outline: none;
+    border: none;
     font-size: 3.64vw;
-    width: 15.6vw;
-    margin-bottom: 1vh;
-    margin-left: 20px;
+    width: 11vw;
 }
 .actionbuttons{
     color: white;
@@ -82,6 +162,7 @@ body{
     color:rgba(255,255,255, .75);
     cursor: pointer;
 }
+/* ACTION BUTTONS END */
 /* CHAT */
 #chatdiv{
     position:fixed;
@@ -179,19 +260,15 @@ li{
 }
 #potSize{
     color:white;
-    font-size: 50px;
+    font-size: 2vw;
     font-family: theFont;
+    text-transform: uppercase;
 }
 #theBoard li{
     display:inline-block;
     margin:10px;
 }
-#myCards{
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-}
+
 #lobby{
     font-family: theFont;
     color: white;
@@ -201,9 +278,7 @@ li{
     font-size: 30px;
     bottom: -15px;
 }
-.boardCard{
-    width: 80px;
-}
+
 .hidden{
     display: none;
 }
@@ -216,7 +291,7 @@ li{
     
     position: relative;
     display: inline-block;
-    margin-top: -100px;
+    margin-top: -72px;
     border-radius: 25px;
     font-size: 16px;
     font-family: theFont;
@@ -233,20 +308,21 @@ li{
     padding-top: 5px;
     text-transform: uppercase;
 }
-.opponentName{
+/* .opponentName{
     color:#9C001B !important;
-}
+} */
 .opponentMoneyInPot{
     color: white !important;
     float: right;
     margin-right: 10px;
     font-size: 20px;
 }
-.dealer .playerp{
-    background-color: goldenrod !important;
-}
+/* .dealer .playerp{
+     background-color: goldenrod !important; 
+} */
 .dealerchip{
     display: none;
+    width: 2vw;
 }
 .dealer .dealerchip{
    
@@ -255,18 +331,58 @@ li{
 }
 /* CARDS */
 .opponentCards{
-    width: 50px;
+    width: 4vw;
     margin: 0;
     padding: 0;
 }
-
+#myCards{
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+#myCards p{
+    font-family: theFont;
+    background-color: white;
+    margin: 0;
+    padding: 5px;
+    border-radius: 10px;
+    font-size: 20px;
+    margin-top: -10px;
+    padding-top: 5px;
+    text-transform: uppercase;
+}
+#myStack{
+    float: left;
+    margin-left: 20px;
+}
+#myMoneyInPot{
+    position: relative;
+   margin-right: -80px;
+}
 #card1, #card2{
-    width: 140px;
+    width: 5.5vw;
     
+}
+.boardCard{
+    width: 4.5vw ;
 }
 .glow .playerp{
     box-shadow: #9C001B 0px 5px 15px;
     border-radius: 5px;
+}
+.youGlow p{
+    box-shadow: #9C001B 0px 5px 15px;
+    border-radius: 5px;
+}
+.dealer #myDealerChip{
+    display: block;
+}
+#myDealerChip{
+    position: absolute;
+    display: none;
+    margin-left: -90px;
+    margin-top: -170px;
 }
 .leftTilt{
     transform: rotate(-7deg);

@@ -12,6 +12,7 @@ The following is basic metadata and importing the base stylesheet and script
 <meta name='subject' content=''>
 <link rel="stylesheet" type="text/css" href="styles/index.css">
 <link rel="stylesheet" type="text/css" href="styles/poker.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <!--
 The above is basic metadata and importing the base stylesheet and script
@@ -29,6 +30,8 @@ Bootstrap CSS import:
 </head>
 <body>
   <img id="tableLogo" src="styles/img/logo-file.png">
+  <div id="menu"><i class="fa fa-bars"></i></div>
+
   <center><button id="generate">Begin Game</button>
     </center>
 
@@ -46,15 +49,18 @@ Bootstrap CSS import:
     </ul>
   </div>
   <!-- PLAYERS AROUND TABLE END -->
+  <div id="potSize">Pot Size: 0</div> 
   <ul  id="theBoard">
     <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li> <li><img class="boardCard" src='img/yellow_back.png'></img></li>
   </ul>
   
-  <br> <h4 id="potSize"></h4> <br>
+   
   <center>
     <div id="myCards">
       <img id="card1" class="leftTilt" src="img/blue_back.png">
       <img id="card2" class="rightTilt" src="img/blue_back.png">
+      <div id="myPlayer" class="dealer"><img id="myDealerChip" src="img/DEALER-CHIP.png"><p ><span id="myName">Name</span><br><span id="myStack">2000</span><span id="myMoneyInPot">2</span></p></div>
+      
     </div>
   </center>
 </div>
@@ -66,11 +72,23 @@ Bootstrap CSS import:
 <div id="actionbuttons">
   
   <form id="poker-form" type="submit">
+    <div id="raisebar"><div id="raiseBar1">
+      <button id="quarterRaise" type="button">1/4</button>
+      <button id="halfRaise" type="button">1/2</button>
+      <button id="allInRaise" type="button" >ALL IN</button>
+      <br>
+      <div id="rangeContainer"><input type="range" min="0" max="100" value="0" class="slider" id="myRange"></div>
+    </div>
+    <div id="raiseBar2">
+      <input value="20" id="raise" autocomplete="off" title="raise" type="number"/>
+    </div>  
+  </div>
+    <button class="actionbuttons" value="fold" id="foldbutton">Fold</button>
     <button value="check" id="checkbutton" class="actionbuttons">Check</button>
     <button value="call" id="callbutton" class="actionbuttons">Call</button>
-    <input value="raise" id="raise" autocomplete="off" title="raise" type="number"/><button id="raisebutton" class="actionbuttons">Raise</button>
+    <button id="raisebutton" class="actionbuttons">Raise</button>
     
-    <button class="actionbuttons" value="fold" id="foldbutton">Fold</button>
+    
     <!-- <button id="toggleStraddle">Straddle</button> -->
   </form>
 </div>
