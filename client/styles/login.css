@@ -29,14 +29,21 @@ input:focus{
 button{
     background: none;
     border: none;
-    padding: 5px;
-    border: 3px solid white;
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    color: #1e2620;
+    letter-spacing: -1px;
+    font-family: theFont;
+    font-size: 3.5vw;
+    text-transform: uppercase;
+    background: white;
     transition: background-color 0.2s ease-out;
 
 }
 button:hover{
     cursor: pointer;
-    background-color: #6B3934;
+    background-color: grey;
     
 }
 #aboutus{
