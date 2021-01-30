@@ -9,7 +9,12 @@
 ![](https://github.com/sevdeawesome/831poker/blob/main/art/831poker-showcase.png)
 
 
-
+## To install:
+1) download files
+2) navigate to server directory
+3) install node js
+4) npm run start
+5) Game is hosted on port 8080
 
 ## Technologies Used
 - JavaScript
