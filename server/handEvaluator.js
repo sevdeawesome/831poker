@@ -82,9 +82,6 @@ returnBestHand(hand1, hand2)
 {
     var hand1number = this.evaluateHandNumberValue(hand1);
     var hand2number = this.evaluateHandNumberValue(hand2);
-
-    //console.log(hand1number);
-    //console.log(hand2number);
     
     if(hand1number>hand2number)
     {
@@ -127,7 +124,7 @@ evaluateHandForString(hand1)
     if(handNum > 8)
     {
         var topOfStraight = Math.floor((handNum.toFixed(2) - Math.floor(handNum)) * 100);
-        console.log(topOfStraight);
+        //console.log(topOfStraight);
         return "Straight Flush: " + Card.numberToString(topOfStraight) + " to " + Card.numberToString(topOfStraight - 4);
     }
     //If Quads
@@ -135,7 +132,7 @@ evaluateHandForString(hand1)
     {
         var QuadsNum = Math.floor((handNum.toFixed(2) - Math.floor(handNum)) * 100);
         var highCard = ((handNum.toFixed(4) - handNum.toFixed(2)) * 10000).toFixed();
-        console.log(highCard);
+        //console.log(highCard);
         return "Four of a Kind: " + Card.numberToString(QuadsNum) + "'s, " + Card.numberToString(highCard) + " high";
     }
     //If Full House
@@ -309,7 +306,7 @@ returnTwoPairNumber(hand1)
         var highCard = new Card('s', 0);
         for(var i = cards.length - 1; i >= 0; i--)
         {
-            if(i != twoPairNumber1Index1 && i != twoPairNumber1Index2 && i != twoPairNumber2Index1 && i != twoPairNumber2Index1)
+            if(i != twoPairNumber1Index1 && i != twoPairNumber1Index2 && i != twoPairNumber2Index1 && i != twoPairNumber2Index2)
             {
                 if(cards[i].getNumber() > highCard.getNumber())
                 {

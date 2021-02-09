@@ -178,7 +178,7 @@ io.on('connection', (sock) => {
     let theGame = getGameFromSockID(sock.id);
     let hand = theGame.returnHand();
     let player = hand.getCurrPlayer();
-    hand.calculateAndAwardPots();
+    
 
     //if valid option
     if(hand.validOption(turnVar))

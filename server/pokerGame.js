@@ -169,8 +169,17 @@ class pokerGame{
        
         for(var i = 0; i < this.totalPlayers; i++)
         {
-            var info = {name: this.players[i].getName(), hand: this.players[i].getHand().getPNGHand()}
-            arr.push(info);
+            //If they have a hand, display it to client side
+            if(this.players[i].getHand() != null)
+            {
+                var info = {name: this.players[i].getName(), hand: this.players[i].getHand().getPNGHand()}
+                arr.push(info);
+            }
+            //else display no hand for them
+            else{
+                var info = {name: this.players[i].getName(), hand: null}
+                arr.push(info);
+            }
         }
         return arr;
         
@@ -215,7 +224,7 @@ class pokerGame{
                 holeCard2 = currPerson.getHand().getHoleCard2().cardToPNG();
             }
             
-            returnArr.push({name: currPerson.getName(), stack: currPerson.getStackSize(), moneyIn: currPerson.getCurrMoneyInBettingRound(), 
+            returnArr.push({name: currPerson.getName(), stack:  currPerson.getStackSize(), moneyIn: currPerson.getCurrMoneyInBettingRound(), 
             card1: holeCard1, card2: holeCard2, 
             valTurn: currPerson.getValTurn(), isShown1: false, isShown2: false, isStraddled: false, isTurn: currPerson.getTurn()
             });

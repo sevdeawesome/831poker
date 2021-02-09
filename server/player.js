@@ -44,13 +44,16 @@ class player {
   }
   addToStack(num)
   {
-    this.stackSize+=num;
+    this.stackSize+=Number(num);
   }
   addCurrMoneyInPot(a){
     this.currMoneyInPot += a;
   }
   getCurrMoneyInPot(){
     return this.currMoneyInPot;
+  }
+  setCurrMoneyInPot(num){
+    this.currMoneyInPot=num;
   }
   getCurrMoneyInBettingRound(){
     return this.currMoneyInBettingRound;

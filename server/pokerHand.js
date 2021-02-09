@@ -78,6 +78,7 @@ class pokerHand
    updateHand()
    {
        console.log("Current player is: " + this.getCurrPlayer().getName());
+       console.log("Current player has: $" + this.getCurrPlayer().getCurrMoneyInPot() + " money in the pot currently");
        //Updates all players clients with currentStack Sizes, the current cards on board, and if players are folded or not
        this.emitEverything();
        //If only one player left, that player wins the hand and receives money in their stack
@@ -104,7 +105,7 @@ class pokerHand
        {
            console.log("Keep on going more players need to act");
             this.io.to(this.theGame.getGameID()).emit('consoleLog', "It is " + this.getCurrPlayer().getName() +"'s turn");
-            this.callTurnOnNextPlayer();
+            this.callTurnOnNextPlayer(); 
        }
        //If there are no players left to act in the betting round, then the game needs to either deal the flop, turn, river, or get the winner of the hand at showdown.
        else{
@@ -150,7 +151,7 @@ class pokerHand
                {
                    var self = this;
                    setTimeout(function() {
-                       self.callTurnOnNextPlayer();
+                       self.callTurnOnNextPlayer();0
                    }, 2000);
                }
                else{
@@ -208,20 +209,24 @@ class pokerHand
                     }
                 } 
                 */
-                var handEval = new handEvaluator(this.communityCards);
-                var winner = this.getWinner(this.playersInHand);
+                //var handEval = new handEvaluator(this.communityCards);
+                //var winner = this.getWinner(this.playersInHand);
+                
+                this.calculateAndAwardPots();
                 
 
                 //emit the winner string
+                /** 
                 this.io.to(this.theGame.getGameID()).emit("consoleLog", "\n \n" + winner.getName() + " has won the pot of: $ " + this.moneyInPot);
                 this.io.to(this.theGame.getGameID()).emit("consoleLog", "\n \n" + winner.getName() + " has won the pot of: $ " + this.moneyInPot + " with: " + handEval.evaluateHandForString(winner.getHand()));
                 this.io.to(this.theGame.getGameID()).emit("message", "" +winner.getName() + " has won the pot of: $ " + this.moneyInPot + " with: " + handEval.evaluateHandForString(winner.getHand()));
 
                 console.log(winner.getName() + "has won the pot of: $" + this.moneyInPot);
+                */
 
                 //Clears all players Money in pot values, clears all turn vals and sets them all to undefined, and moves the dealer Index up by one for the next hand.
                 this.emitEverything();
-                winner.addToStack(this.moneyInPot);
+                //winner.addToStack(this.moneyInPot);
                 this.io.to(this.theGame.getGameID()).emit('consoleLog', "A new hand is starting in 5 seconds");
                 this.theGame.clearGame();
                 this.handComplete = true;
@@ -237,14 +242,156 @@ class pokerHand
 
     calculateAndAwardPots()
     {
+        var handEval = new handEvaluator(this.communityCards);
 
-        //Dead money
-        var deadMoney = 0;
-        for(var i = 0; i < this.theGame.getAllPlayers().length; i++)
+        //Go through the players still in the hand, and make a list of the split pots there will be.
+
+        var pots = [];
+        for(var i = 0; i < this.playersInHand.length; i++)
         {
-            if(this.playersInHand.includes(this.theGame.getAllPlayers()[i]))
+            console.log(this.playersInHand[i].getName() + " has: " + this.playersInHand[i].getCurrMoneyInPot() + " money in the pot");
+            if(!pots.includes(this.playersInHand[i].getCurrMoneyInPot()))
             {
-                console.log("This game includes: " + this.theGame.getAllPlayers()[i].getName());
+                pots.push(this.playersInHand[i].getCurrMoneyInPot());
+            }
+        }
+        //console.log(pots);
+
+        //simple bubblesort of pots
+        for(var y = 0; y<pots.length;y++){
+            for(var index =0; index<pots.length-1; index++){
+                if(pots[index]>pots[index+1]){
+                    var temp = pots[index];
+                    pots[index]=pots[index+1];
+                    pots[index+1]=temp;
+                }
+            }
+        }
+
+        //For each split pot, make an index in a new array of winners 
+       
+
+        
+        //For each pot, check the eligibility of each player in the hand to win the pot, and determine the current winner of the pot.
+ 
+       
+        for(var i = 0; i < pots.length; i++)
+        {
+            var tied = false;
+            var numWinners = 1;
+            var currWinners = [];
+            //Set default winner to the first player in the array of the hand.
+            currWinners.push(this.playersInHand[0]);
+
+            //console.log(currWinners);
+            //Go through each player
+            for(var j = 1; j < this.playersInHand.length; j++)
+            {
+
+                if(this.playersInHand[j].getCurrMoneyInPot() >= pots[i])
+                {
+                    
+                    if(handEval.returnBestHand(currWinners[0].getHand(), this.playersInHand[j].getHand()) == currWinners[0].getHand())
+                    {
+                        //currwinner stays
+                        console.log("Curr Winner stays the same with: " + currWinners[0].getName());
+                    }
+                    else if(handEval.returnBestHand(currWinners[0].getHand(), this.playersInHand[j].getHand()) == this.playersInHand[j].getHand())
+                    {
+                        console.log("Curr Winner changes to " + this.playersInHand[j].getName());
+                        currWinners =[];
+                        currWinners[0] = this.playersInHand[j];
+                        tied= false;
+                    }
+                    //split pot case
+                    else{
+                        //console.log(handEval.returnBestHand(currWinners[0].getHand(), this.playersInHand[j].getHand()));
+                        console.log("Pot #: " + i + "is a split pot");
+                        tied = true;
+                        currWinners[numWinners++] = this.playersInHand[j];
+                        console.log("The number of winners is "+numWinners);
+                    }
+                }
+            }
+           // console.log(currWinners);
+
+            //counts up the total value of the pot, called moneyAwarded, based on who had money in the pot
+            var moneyAwarded=0;
+            moneyAwarded = Number(moneyAwarded);
+            for(var p=0; p<this.theGame.getAllPlayers().length;p++){
+                //if they had less than the value of the pot, add whatever money was in pot, and set their money in pot to zero
+                if(pots[i]>this.theGame.getAllPlayers()[p].getCurrMoneyInPot()){
+                    moneyAwarded+=this.theGame.getAllPlayers()[p].getCurrMoneyInPot();
+                    this.theGame.getAllPlayers()[p].setCurrMoneyInPot(0);
+
+                    //Find index of player who now has 0 in the stack and remove them from the hand array 
+                    var index = this.playersInHand.indexOf(this.theGame.getAllPlayers()[p]);
+                    if (index !== -1) {
+                        console.log("Found and removed player w 0 stack");
+                        this.playersInHand.splice(index, 1);
+                    }
+                    
+                } 
+                //if they had at least the value of the pot, add the pot value to the total money awarded, and subtract pot value from their total money in pot
+                else{
+                    moneyAwarded+=pots[i];
+                    this.theGame.getAllPlayers()[p].setCurrMoneyInPot(this.theGame.getAllPlayers()[p].getCurrMoneyInPot()-pots[i]);
+                }
+            }
+            //split up money amongst winners, if 1 winner, the entire prize is given to the one winner. Prize is rounded to 2 decimal places
+             moneyAwarded = (moneyAwarded/currWinners.length).toFixed(2);
+             console.log("Money awarded: " + moneyAwarded);
+            for(var k = 0; k < currWinners.length; k++){
+                if(pots.length > 1)
+                {
+                    //Main pot winner announced differently
+                    if(i==0)
+                    {
+                        currWinners[k].addToStack(moneyAwarded);
+                        this.io.to(this.theGame.getGameID()).emit('message', "" + currWinners[k].getName() + " has won the main pot of $" + moneyAwarded + " with: " + handEval.evaluateHandForString(currWinners[k].getHand()));
+                        console.log(currWinners[k].getName() + " has won the main pot of $" + moneyAwarded + " with: " + handEval.evaluateHandForString(currWinners[k].getHand()));
+                    }
+                    else
+                    {
+                        //If only one player wins the pot, don't announce it just give them their money quietly.
+                        if(this.playersInHand.length == 1)
+                        {
+                            currWinners[k].addToStack(moneyAwarded);
+                        }
+                        //Normal split pot announcement
+                        else{
+                            currWinners[k].addToStack(moneyAwarded);
+                            this.io.to(this.theGame.getGameID()).emit('message', "" + currWinners[k].getName() + " has won split pot: " + i + " of $" + moneyAwarded + " with: " + handEval.evaluateHandForString(currWinners[k].getHand()));
+                            console.log("" + currWinners[k].getName() + " has won split pot: " + i + " of $" + moneyAwarded + " with: " + handEval.evaluateHandForString(currWinners[k].getHand()));
+                        }
+                        /**
+                        var numPlayersPot = 0;
+                        for(var l = 0; l < this.playersInHand.length; l++)
+                        {
+                            if(this.playersInHand[i].getCurrMoneyInPot() >= pots[i])
+                            {
+                                numPlayersPot++;
+                            }
+                        }
+                        if(numPlayersPot > 1)
+                        {
+                            currWinners[k].addToStack(moneyAwarded);
+                            this.io.to(this.theGame.getGameID()).emit('message', "" + currWinners[k].getName() + " has won split pot: " + i + " of $" + moneyAwarded + " with: " + handEval.evaluateHandForString(currWinners[k].getHand()));
+                            console.log(currWinners[k].getName() + " has won $" + moneyAwarded + " with: " + handEval.evaluateHandForString(currWinners[k].getHand()));
+                        }
+                         */
+                    }
+                }
+                else{
+                //Else only one pot and will announce the winner of that pot normally
+                currWinners[k].addToStack(moneyAwarded);
+                this.io.to(this.theGame.getGameID()).emit('message', "" + currWinners[k].getName() + " has won $" + moneyAwarded + " with: " + handEval.evaluateHandForString(currWinners[k].getHand()));
+                console.log(currWinners[k].getName() + " has won $" + moneyAwarded + " with: " + handEval.evaluateHandForString(currWinners[k].getHand()));
+                }
+            }
+            
+            for(var u = i+1; u<pots.length;u++){
+                pots[u]=pots[u]-pots[i];
             }
         }
     }
@@ -270,13 +417,26 @@ class pokerHand
     }
     else if(valTurn == "call")
     {
+        //They have less than pot
+        if(this.getCurrPlayer().getStackSize() < this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInBettingRound())
+        {
+            console.log("Player calling all in for more than they have");
+            this.moneyInPot += Number(this.getCurrPlayer().getStackSize());
+            
+            this.getCurrPlayer().addCurrMoneyInBettingRound( Number(this.getCurrPlayer().getStackSize()));
+            this.getCurrPlayer().addCurrMoneyInPot( Number(this.getCurrPlayer().getStackSize()));
+            this.getCurrPlayer().minusFromStack(this.getCurrPlayer().getStackSize());
+        }
+        
+        else{
         this.getCurrPlayer().minusFromStack(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInBettingRound());
         this.moneyInPot += Number(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInBettingRound());
+        this.getCurrPlayer().addCurrMoneyInPot(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInBettingRound());
         this.getCurrPlayer().addCurrMoneyInBettingRound(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInBettingRound());
 
         //For split pots
-        this.getCurrPlayer().addCurrMoneyInPot(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInPot());
-        
+       
+        }
 
         this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getCurrPlayer().getName() + " has called. " );
         if(this.getCurrPlayer().getStackSize() == 0)
@@ -314,18 +474,19 @@ class pokerHand
     //Raise/ bet section
     else
     {
-        
+        //valTurn = Number(valTurn + this.getCurrPlayer().getCurrMoneyInBettingRound());
         this.io.to(this.theGame.getGameID()).emit('consoleLog', this.getCurrPlayer().getName() + " has raised to: " + valTurn);
         this.getCurrPlayer().minusFromStack(valTurn - this.getCurrPlayer().getCurrMoneyInBettingRound());
-        
+        console.log("The player has put "+(valTurn-this.getCurrPlayer().getCurrMoneyInPot())+" into the pot");
         this.currBet = Number(valTurn);
         
         this.moneyInPot += Number(valTurn - this.getCurrPlayer().getCurrMoneyInBettingRound());
+        this.getCurrPlayer().addCurrMoneyInPot(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInBettingRound());
         this.getCurrPlayer().addCurrMoneyInBettingRound(valTurn - this.getCurrPlayer().getCurrMoneyInBettingRound());
         this.initialRaiser = this.getCurrPlayer();
 
         //For split pots
-        this.getCurrPlayer().addCurrMoneyInPot(this.getCurrBet() - this.getCurrPlayer().getCurrMoneyInPot());
+       
 
         if(this.getCurrPlayer().getStackSize() == 0)
         {
@@ -440,7 +601,7 @@ class pokerHand
                 return false;
             }
             //Try to bet more than their stack size
-            if(valTurn > this.getCurrPlayer().getStackSize() - this.getCurrPlayer().getCurrMoneyInBettingRound())
+            if((valTurn - this.getCurrPlayer().getCurrMoneyInBettingRound()) > this.getCurrPlayer().getStackSize())
             {
                 this.io.to(this.currPlayer.getSock()).emit('consoleLog', "Invalid bet. You cannot bet an amount greater than your stack size");
                 return false;
@@ -472,18 +633,29 @@ class pokerHand
             
            this.getCurrPlayer().setTurn(true);
            this.emitEverything();
+           
            this.io.to(this.getCurrPlayer().getSock()).emit('yourTurn', this.theGame.getTurnTime());
        }
    }
 
-
+   eligibleForBlinds(person)
+   {
+       if(this.playersInHand.indexOf(person) != -1)
+       {
+           if(person.getStackSize() >= 10)
+           {
+                return true;
+           }
+       }
+       return false;
+   }
 
 
    collectSmallBlind()
    {
       // console.log(this.getNextPlayer(this.dealer));
        //console.log(this.theGame.getSB());
-
+        
        this.getNextPlayer(this.dealer).minusFromStack(this.theGame.getSB());
        this.getNextPlayer(this.dealer).addCurrMoneyInPot(this.theGame.getSB());
        this.getNextPlayer(this.dealer).setCurrMoneyInBettingRound(this.theGame.getSB());
@@ -524,6 +696,7 @@ class pokerHand
     }
 
     //Gets winner from an array of players ( allows you to put different arrays of players in the case of split pots)
+    /** 
     getWinner(players)
     {
         var handEval = new handEvaluator(this.communityCards);
@@ -550,6 +723,7 @@ class pokerHand
 
 		return currWinner;
     }
+    */
 
 
    
