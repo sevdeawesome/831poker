@@ -8,8 +8,13 @@
  
 ![](https://github.com/sevdeawesome/831poker/blob/main/art/831poker-showcase.png)
 
-[![58889589bc2fc2ef3a1860c0.png](https://i.postimg.cc/PxHRMC70/58889589bc2fc2ef3a1860c0.png)](https://postimg.cc/06tnkyPC)
 
+## To install:
+1) download files
+2) navigate to server directory
+3) install node js
+4) npm run start
+5) Game is hosted on port 8080
 
 ## Technologies Used
 - JavaScript
@@ -26,6 +31,13 @@
  - Factory (We started using factory in the pokerGame class to create hand rounds but ended up abandoning ship and writing code without a design pattern)
  - Singleton
  
- 
+ ## Features:
+- Custom built UI
+- Multiplayer poker rounds functionality
+- Chat with your lobby
+
+## Coming soon:
+- Options for game host
+- Mute button to toggle sounds
 
 
