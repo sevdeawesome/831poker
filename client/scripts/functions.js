@@ -189,7 +189,11 @@ function createPlayers(playerArr){
       // myPlayer.className = "";
       myPlayer.classList.add("dealer");
       myPlayer.classList.add("youGlow");
+
+      currMoneyInBetting = currPlayer.moneyIn;
+      console.log(currPlayer.moneyIn);
       yourStack = currPlayer.stack;
+
       console.log(yourStack);
       document.getElementById("myName").innerText = currPlayer.name;
       document.getElementById("myStack").innerText = currPlayer.stack;

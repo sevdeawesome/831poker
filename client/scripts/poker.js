@@ -20,19 +20,20 @@ function openCity(evt, cityName) {
 
 var slider = document.getElementById("myRange");
 var raise = document.getElementById("raise");
-var myMoneyIn = Number(document.getElementById("myMoneyInPot").value);
 
 raise.value = slider.value;
-slider.max = yourStack+myMoneyIn;
+slider.max = Number(yourStack+currMoneyInBetting);
 
 
 slider.oninput = function() {
-  slider.max = yourStack+myMoneyIn;
+  slider.max = Number(yourStack+currMoneyInBetting);
   raise.value = this.value;
+  console.log("Money in:" + currMoneyInBetting);
+  console.log("stack:" + yourStack);
 }
 raise.oninput = function() {
 
-  slider.value = this.value+myMoneyIn;
+  slider.value = Number(this.value+currMoneyInBetting);
 }
 
 function quarterRaise(){
@@ -45,7 +46,7 @@ function halfRaise(){
 }
 function allInRaise(){
   raise.value = yourStack ;
-  slider.value = yourStack + myMoneyIn;
+  slider.value = Number(yourStack + currMoneyInBetting);
 }
 var qRaise = document.getElementById("quarterRaise");
 qRaise.onclick = function(){

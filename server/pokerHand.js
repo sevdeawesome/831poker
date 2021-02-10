@@ -655,21 +655,42 @@ class pokerHand
    {
       // console.log(this.getNextPlayer(this.dealer));
        //console.log(this.theGame.getSB());
-        
+
+       //if the player has more than the small blind, take the small blind out of their stack and add to the pot and betting round
+       if(this.theGame.getSB()<this.getNextPlayer(this.dealer).getStackSize()){
        this.getNextPlayer(this.dealer).minusFromStack(this.theGame.getSB());
        this.getNextPlayer(this.dealer).addCurrMoneyInPot(this.theGame.getSB());
        this.getNextPlayer(this.dealer).setCurrMoneyInBettingRound(this.theGame.getSB());
        this.moneyInPot += this.theGame.getSB();
+        } else if(this.getNextPlayer(this.dealer).getStackSize()>0){
+            //if the player has less than the small blind it takes whatever they have in their stack and adds that to the pot and betting round, putting them all in
+            this.getNextPlayer(this.dealer).addCurrMoneyInPot(this.getNextPlayer(this.dealer).getStackSize());
+            this.getNextPlayer(this.dealer).setCurrMoneyInBettingRound(this.getNextPlayer(this.dealer).getStackSize());
+            this.moneyInPot += this.getNextPlayer(this.dealer).getStackSize();
+            this.getNextPlayer(this.dealer).minusFromStack(this.getNextPlayer(this.dealer).getStackSize());
+            this.getNextPlayer(this.dealer).setValTurn("playerIsAllIn");
+            this.getNextPlayer(this.dealer).setAllIn();
+        }
       //console.log("Collected small blind from: " + this.getNextPlayer(this.dealer).getName());
        this.io.to(this.getNextPlayer(this.dealer).getSock()).emit('consoleLog', "You are assigned small blind and " + this.theGame.getSB() + " has been taken from your stack");
    }
 
    collectBigBlind()
    {
+    if(this.theGame.getBB()<this.getNextPlayer(this.getNextPlayer(this.dealer)).getStackSize()){
        this.getNextPlayer(this.getNextPlayer(this.dealer)).minusFromStack(this.theGame.getBB());
         this.getNextPlayer(this.getNextPlayer(this.dealer)).addCurrMoneyInPot(this.theGame.getBB());
         this.getNextPlayer(this.getNextPlayer(this.dealer)).setCurrMoneyInBettingRound(this.theGame.getBB());
        this.moneyInPot += this.theGame.getBB();
+    } 
+    else if(this.getNextPlayer(this.getNextPlayer(this.dealer)).getStackSize()>0){
+        this.getNextPlayer(this.getNextPlayer(this.dealer)).addCurrMoneyInPot(this.getNextPlayer(this.getNextPlayer(this.dealer)).getStackSize());
+        this.getNextPlayer(this.getNextPlayer(this.dealer)).setCurrMoneyInBettingRound(this.getNextPlayer(this.getNextPlayer(this.dealer)).getStackSize());
+        this.moneyInPot += (this.getNextPlayer(this.getNextPlayer(this.dealer)).getStackSize());
+        this.getNextPlayer(this.getNextPlayer(this.dealer)).minusFromStack(this.getNextPlayer(this.getNextPlayer(this.dealer)).getStackSize());
+        this.getNextPlayer(this.getNextPlayer(this.dealer)).setValTurn("playerIsAllIn");
+        this.getNextPlayer(this.getNextPlayer(this.dealer)).setAllIn()
+    }
        //console.log("Collected big blind from: " + this.getNextPlayer(this.getNextPlayer(this.dealer)).getName());
        this.io.to(this.getNextPlayer(this.getNextPlayer(this.dealer)).getSock()).emit('consoleLog', "You are assigned big blind and " + this.theGame.getBB() + " has been taken from your stack");
    }

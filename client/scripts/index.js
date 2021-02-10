@@ -1,6 +1,7 @@
 //your stacksize var
 var yourStack;
 var currPot = 0;
+var currMoneyInBetting = 0;
 
 
 const sock = io();
