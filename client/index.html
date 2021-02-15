@@ -12,6 +12,8 @@ The following is basic metadata and importing the base stylesheet and script
 <meta name='subject' content=''>
 <link rel="stylesheet" type="text/css" href="styles/index.css">
 <link rel="stylesheet" type="text/css" href="styles/login.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <!--
 The above is basic metadata and importing the base stylesheet and script
 
@@ -31,19 +33,64 @@ Bootstrap CSS import:
 <center id="content">
 <img src="styles/img/logo-file.png">
 
+<div id="popup">
+  <div id="innerpopup" >
+    <i class="fa fa-times destroy" style="color: white; float: right; font-size: 5em; margin-right: 15px; "></i>
+    <form id="enter" action="poker.html">
+      <p><span class="input">Your Name: <input id="name" type="text" name="username" placeholder="User name" required autocomplete="off"/></span> </p>
+      <p>Default Stack: <input id="stacksize" type="number" name="stacksize" placeholder="Stack size" required autocomplete="off"/> </p>
+      <p>Big Blind: <input id="bigblind" type="number" name="bigblind" placeholder="Stack size" required autocomplete="off"/> </p>
+      <p>Small Blind: <input id="smallblind" type="number" name="smallblind" placeholder="Stack size" required autocomplete="off"/> </p>
+      <p>Lobby Name: <input id="lobbyname" type="text" name="lobbyname" placeholder="Lobby name" required autocomplete="off"> </p>
+      <p>Password? 
+        
+        <label class="switch">
+          <input type="checkbox" id="checker">
+          <span class="slider round"></span>
+        </label>
+<br>
+        <br> <input id="password" class="serverpassword" type="text" name="password" placeholder="Not required" autocomplete="off"> </p><br>
+      <button id="join">Create Game</button><br><br>
+    </form>
+  </div>
+</div>
+
 <form id="enter" action="poker.html">
   <p><span class="input">Name: <input id="name" type="text" name="username" placeholder="User name" required autocomplete="off"/></span> </p>
   <p>Stack: <input id="stacksize" type="number" name="stacksize" placeholder="Stack size" required autocomplete="off"/> </p>
-  <p>Lobby: <input id="lobbyname" type="text" name="lobbyname" placeholder="Lobby name" required autocomplete="off"> </p><br>
+  <p>Lobby: <input id="lobbyname" type="text" name="lobbyname" placeholder="Lobby name" required autocomplete="off"> </p>
+  <p>Password: <input id="password" type="text" name="password" placeholder="shhh" autocomplete="off"> </p><br>
   <button id="join">Join Game</button>
+  <button id="join" class="create" type="button" >Create Game</button>
 </form>
 </center>
 <center><p id="footer">831 Poker 
   <a href="https://github.com/sevdeawesome/831poker" id="aboutus">Github</a> <!--about us page can be implemented later here-->
   <br>Created by: <a href="#">Thomas Trenholme</a>, <a href="#">Severin Field</a> and <a href="#">Nik Milcevski</a>	</p></center>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" integrity="sha512-BHtomM5XDcUy7tDNcrcX1Eh0RogdWiMdXl3wJcKB3PFekXb3l5aDzymaTher61u6vEZySnoC/SAj2Y/p918Y3w==" crossorigin="anonymous"></script>
 
 <script src="scripts/functions.js"></script>
 <script src="scripts/index.js"></script>
+<script>
+  $(document).ready(function(){
+  $(".create").click(function(){
+    $("#popup").slideDown();
+    });
+    $(".destroy").click(function(){
+    $("#popup").fadeOut();
+    });
+    $("#checker").click(function(){
+      $(".serverpassword").toggle();
+      // if($("#password").is(":visible")){
+      //   $("#password").hide();
+      // }
+    
+    });
+    
+  });
+
+</script>
 </html>

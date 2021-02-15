@@ -33,7 +33,27 @@ color: cmyk(0%, 3%, 13%, 0%);
 
 */
 
-
-
+body{
+  margin: 0;
+}
+#popup{
+  display: none;
+  z-index: 9999;
+  background:rgb(0,0,0, .5);
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  position: fixed;
+  margin: 0;
+}
+#innerpopup{
+ background-color: #0d0d0d;
+ border: 5px solid white;
+  padding: 20px;
+   width: 60%; margin-top: 4%;
+}
+.destroy:hover{
+  cursor: pointer;
+}
 
 

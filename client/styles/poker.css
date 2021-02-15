@@ -47,6 +47,9 @@ body{
     font-size: 3.8vw;
     top: 1.2vh;
 }
+#menu:hover{
+    cursor: pointer;
+}
 /* console */
 #consolediv{
     width: 25%;
@@ -401,4 +404,18 @@ li{
 }
 .rightTilt{
     transform: rotate(7deg);
+}
+
+
+#innerpopup .popuptext{
+    font-family: theFont;
+    text-transform: uppercase;
+    color: white;
+    font-size: 30px;
+}
+#innerpopup select{
+    font-family: theFont;
+    text-transform: uppercase;
+    color: black;
+    font-size: 30px;
 }

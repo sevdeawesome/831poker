@@ -103,3 +103,6 @@ document.getElementById("checkbutton").addEventListener('click', sendCheck);
 document.getElementById("callbutton").addEventListener('click', sendCall);
 document.getElementById("foldbutton").addEventListener('click', sendFold);
 document.getElementById("raisebutton").addEventListener('click', sendRaise);
+
+
+
