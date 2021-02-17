@@ -53,9 +53,9 @@ function startGame(){
 }
 
 //get their name and roomnumber and stack size
-const {username, stacksize, lobbyname} = Qs.parse(location.search, {
-  ignoreQueryPrefix: true
-});
+// const {username, stacksize, lobbyname} = Qs.parse(location.search, {
+//   ignoreQueryPrefix: true
+// });
 yourStack = stacksize;
 
 

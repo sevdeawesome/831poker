@@ -6,6 +6,8 @@ const pokerHand = require('./pokerHand');
 
 class pokerGame{
     constructor(gameID){
+        this.gameHost;
+        this.password;
         this.totalPlayers = 0;   //number of players
         this.players = [];   //array of all the players
         this.gameID = gameID;  //room
@@ -34,6 +36,15 @@ class pokerGame{
     {
         return this.bigBlind;
     }
+    getPassword()
+    {
+        return this.password;
+    }
+    getHost()
+    {
+        return this.gameHost;
+    }
+
     getDealerIdx(){
         return this.dealerIdx;
     }
@@ -56,6 +67,10 @@ class pokerGame{
 
     //add player object to array players
     playerJoin(player){
+        if(this.gameHost == null)
+        {
+            this.gameHost = player;
+        }
         this.players.push(player);
         this.totalPlayers++;
     }
@@ -69,7 +84,16 @@ class pokerGame{
                 
                 this.players.splice(i, 1);
                 this.totalPlayers--;
+                if(this.players.length > 0)
+                {
+                    this.gameHost = this.players[0];
+                }
+                else{
+                    this.gameHost = null;
+                }
+               
                 return temp;
+
             }
         }
     }
@@ -122,6 +146,18 @@ class pokerGame{
     getGameID()
     {
         return this.gameID;
+    }
+
+    checkIfNameIsInGame(name)
+    {
+        for(var i = 0; i < this.getAllPlayers().length; i++)
+        {
+            if(this.getAllPlayers()[i].getName() == name)
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
     checkIfSockIDisInGame(sockID)

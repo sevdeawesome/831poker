@@ -37,11 +37,11 @@ Bootstrap CSS import:
   <div id="innerpopup" >
     <i class="fa fa-times destroy" style="color: white; float: right; font-size: 5em; margin-right: 15px; "></i>
     <form id="enter" action="poker.html">
-      <p><span class="input">Your Name: <input id="name" type="text" name="username" placeholder="User name" required autocomplete="off"/></span> </p>
-      <p>Default Stack: <input id="stacksize" type="number" name="stacksize" placeholder="Stack size" required autocomplete="off"/> </p>
-      <p>Big Blind: <input id="bigblind" type="number" name="bigblind" placeholder="Stack size" required autocomplete="off"/> </p>
-      <p>Small Blind: <input id="smallblind" type="number" name="smallblind" placeholder="Stack size" required autocomplete="off"/> </p>
-      <p>Lobby Name: <input id="lobbyname" type="text" name="lobbyname" placeholder="Lobby name" required autocomplete="off"> </p>
+      <p><span class="input">Your Name: <input id="popupusername" type="text" name="username" placeholder="User name" required autocomplete="off"/></span> </p>
+      <p>Default Stack: <input id="popupstacksize" type="number" name="stacksize" placeholder="Stack size" required autocomplete="off"/> </p>
+      <p>Big Blind: <input id="popupbigblind" type="number" name="bigblind" placeholder="Stack size" required autocomplete="off"/> </p>
+      <p>Small Blind: <input id="popupsmallblind" type="number" name="smallblind" placeholder="Stack size" required autocomplete="off"/> </p>
+      <p>Lobby Name: <input id="popuplobbyname" type="text" name="lobbyname" placeholder="Lobby name" required autocomplete="off"> </p>
       <p>Password? 
         
         <label class="switch">
@@ -49,19 +49,20 @@ Bootstrap CSS import:
           <span class="slider round"></span>
         </label>
 <br>
-        <br> <input id="password" class="serverpassword" type="text" name="password" placeholder="Not required" autocomplete="off"> </p><br>
-      <button id="join">Create Game</button><br><br>
+        <br> <input id="popuppassword" class="serverpassword" type="text" name="password" placeholder="Not required" autocomplete="off"> </p><br>
+      <button class="createConnection" id="createGame">Create Game</button><br><br>
+      
     </form>
   </div>
 </div>
 
-<form id="enter" action="poker.html">
-  <p><span class="input">Name: <input id="name" type="text" name="username" placeholder="User name" required autocomplete="off"/></span> </p>
+<form id="enter" class ="formclass">
+  <p><span class="input">Name: <input id="username" type="text" name="username" placeholder="User name" required autocomplete="off"/></span> </p>
   <p>Stack: <input id="stacksize" type="number" name="stacksize" placeholder="Stack size" required autocomplete="off"/> </p>
   <p>Lobby: <input id="lobbyname" type="text" name="lobbyname" placeholder="Lobby name" required autocomplete="off"> </p>
   <p>Password: <input id="password" type="text" name="password" placeholder="shhh" autocomplete="off"> </p><br>
-  <button id="join">Join Game</button>
-  <button id="join" class="create" type="button" >Create Game</button>
+  <button class ="joinConnection"id="join" >Join Game</button>
+  <button id="join" onclick="return false" class="create" type="button" >Create Game</button>
 </form>
 </center>
 <center><p id="footer">831 Poker 
@@ -72,8 +73,12 @@ Bootstrap CSS import:
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" integrity="sha512-BHtomM5XDcUy7tDNcrcX1Eh0RogdWiMdXl3wJcKB3PFekXb3l5aDzymaTher61u6vEZySnoC/SAj2Y/p918Y3w==" crossorigin="anonymous"></script>
 
+
+<script src="/socket.io/socket.io.js"></script>
 <script src="scripts/functions.js"></script>
 <script src="scripts/index.js"></script>
+<script src="scripts/connections.js"></script>
+
 <script>
   $(document).ready(function(){
   $(".create").click(function(){

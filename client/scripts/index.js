@@ -9,7 +9,16 @@ const sock = io();
 const userList = document.getElementById('userList');
 const roomName = document.getElementById('roomName');
 
-sock.emit('joinRoom', {username, stacksize, lobbyname});
+sock.on('goodJoin', () => {
+
+})
+
+sock.on('goodCreate', () => {
+
+})
+
+
+//sock.emit('joinRoom', {username, stacksize, lobbyname});
 
 sock.on('message', (text) => {
   writeEvent(text);
@@ -17,7 +26,6 @@ sock.on('message', (text) => {
   // var chatMessages = document.querySelector
   //n chatMessages.scrollTop = chatMessages.scrollHeight;
 });
-//writeEvent("Welcome to Sevnet Poker");
 
 sock.on('consoleLog', (text) =>{
   writeConsoleEvent(text);
@@ -95,7 +103,7 @@ sock.on("roomPlayers", (roomPlayers) =>{
 
 sock.on("audio", (audiotype) =>{
   playAudio(audiotype);
-})
+});
 
 document.querySelector("#chat-form").addEventListener('submit', onFormSubmitted);  //send chat messae
 document.getElementById("generate").addEventListener('click', startGame); //start game button

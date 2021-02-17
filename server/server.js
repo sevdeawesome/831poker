@@ -18,6 +18,7 @@ const DeckOfCards = require("./DeckOfCards");
 const { pokerGame, getAllPlayers} = require("./pokerGame");
 const pokerHand = require("./pokerHand");
 const handEvaluator = require("./handEvaluator");
+const e = require("express");
 
 
 
@@ -37,31 +38,120 @@ const io = socketio(server);
 //on connection listening
 
 
-
 io.on('connection', (sock) => {
 //inside connect
     console.log("someone connected!");
 
-  sock.on('joinRoom', ({username, stacksize, lobbyname}) => {
-    //Check for room already made
-    let theGame = null;
-    var isCreated = false;
+  sock.on('test', (text) => {
+    console.log(text);
+  });
+
+  sock.on('joinAttempt', ({username, stacksize, lobbyname, password}) => {
+    console.log("poop42");
+    var gameFound = false;
+    for(var i = 0; i < listOfPokerRooms.length; i++)
+    {
+      if(listOfPokerRooms[i].getGameID() == lobbyname){
+        if(listOfPokerRooms[i].checkIfNameIsInGame(username))
+        {
+          io.to(sock.id).emit('badJoin', "Someone already is using this name");
+        }
+        else if(password != null)
+        {
+          if(listOfPokerRooms[i].getPassword() != password)
+          {
+            io.to(sock.id).emit('badJoin', "Incorrect password for the lobby: " + lobbyname);
+          }
+        }
+        else if(stacksize <= 0)
+        {
+          io.to(sock.id).emit('badJoin', "Stack is less than 0, please try again");
+        }
+        else{
+          io.to(sock.id).emit('goodJoin');
+          gameFound = true;
+
+        }
+      }
+    }
+    if(!gameFound)
+    {
+      console.log("notFoundGame");
+      io.to(sock.id).emit('badJoin', "Lobby with name: " + lobbyname + " not found. :(");
+    }
+  });
+
+  sock.on('createAttempt', ({username, stacksize, lobbyname, smallBlind, bigBlind, password}) => {
+    gameCreated = false;
     for(var i = 0; i < listOfPokerRooms.length; i++)
     {
       if(listOfPokerRooms[i].getGameID() == lobbyname)
       {
-        isCreated = true;
-        theGame = listOfPokerRooms[i];
+        gameCreated = true;
       }
     }
 
-    //Create new game
-    if(!isCreated)
+    if(gameCreated == true)
     {
-        theGame = new pokerGame(lobbyname);
-        console.log("New game created with ID: " + lobbyname);
-        listOfPokerRooms.push(theGame);
+      io.to(sock.id).emit('badCreate', "The lobby: " + lobbyname + " has already been created");
     }
+    else if(stacksize <= 0)
+    {
+      io.to(sock.id).emit('badCreate', "Invalid Default stack size, please try again");
+    }
+    else if(smallBlind < bigBlind)
+    {
+      io.to(sock.id).emit('badCreate', "Invalid small/big blind set up");
+    }
+    else{
+      io.to(sock.id).emit('goodCreate');
+      console.log(username + " successfully created a new Lobby with ID: " + lobbyname);
+    }
+    
+  });
+
+  
+  sock.on('createRoom', ({username, stacksize, lobbyname, smallBlind, bigBlind, password}) => {
+    var theGame = new pokerGame(lobbyname);
+    console.log("New game created with ID: " + lobbyname);
+    listOfPokerRooms.push(theGame);
+    sock.emit('redirect', '/poker.html');
+
+    const user = new player(username, stacksize, sock.id, lobbyname);
+
+    //Actually join the room
+    sock.join(user.getRoom());
+
+    //console.log(user);
+    theGame.playerJoin(user);
+
+    //Send users client the room name and info so it can display
+    io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
+    io.to(theGame.getGameID()).emit('roomPlayers', theGame.emitPlayers());
+    io.to(user.getRoom()).emit('message', theGame.getCurrentUser(sock.id).getName() + " is now spectating...");
+    
+  });
+
+  sock.on('joinRoom', ({username, stacksize, lobbyname}) => {
+    //Check for room already made
+    // let theGame = null;
+    // var isCreated = false;
+    // for(var i = 0; i < listOfPokerRooms.length; i++)
+    // {
+    //   if(listOfPokerRooms[i].getGameID() == lobbyname)
+    //   {
+    //     isCreated = true;
+    //     theGame = listOfPokerRooms[i];
+    //   }
+    // }
+
+    // //Create new game
+    // if(!isCreated)
+    // {
+    //     theGame = new pokerGame(lobbyname);
+    //     console.log("New game created with ID: " + lobbyname);
+    //     listOfPokerRooms.push(theGame);
+    // }
     
 
     console.log(username + " joined: " + lobbyname);
@@ -106,9 +196,6 @@ io.on('connection', (sock) => {
       
   });
 
-
-
-  
 
   sock.on('message', (text) => {
     var theGame = getGameFromSockID(sock.id);
