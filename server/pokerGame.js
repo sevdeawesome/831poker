@@ -8,6 +8,7 @@ class pokerGame{
     constructor(gameID){
         this.gameHost;
         this.password;
+        this.defaultStackSize;
         this.totalPlayers = 0;   //number of players
         this.players = [];   //array of all the players
         this.gameID = gameID;  //room

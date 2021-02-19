@@ -40,28 +40,26 @@ const io = socketio(server);
 
 io.on('connection', (sock) => {
 //inside connect
-    console.log("someone connected!");
+    console.log("someone connected, sock ID is: " + sock.id);
 
   sock.on('test', (text) => {
     console.log(text);
   });
 
   sock.on('joinAttempt', ({username, stacksize, lobbyname, password}) => {
-    console.log("poop42");
+    console.log(username + "is attempting to join lobby: " + lobbyname);
     var gameFound = false;
     for(var i = 0; i < listOfPokerRooms.length; i++)
     {
       if(listOfPokerRooms[i].getGameID() == lobbyname){
+        gameFound = true;
         if(listOfPokerRooms[i].checkIfNameIsInGame(username))
         {
           io.to(sock.id).emit('badJoin', "Someone already is using this name");
         }
-        else if(password != null)
+        else if(listOfPokerRooms[i].getPassword() != password)
         {
-          if(listOfPokerRooms[i].getPassword() != password)
-          {
-            io.to(sock.id).emit('badJoin', "Incorrect password for the lobby: " + lobbyname);
-          }
+          io.to(sock.id).emit('badJoin', "Incorrect password for the lobby: " + lobbyname);
         }
         else if(stacksize <= 0)
         {
@@ -69,14 +67,12 @@ io.on('connection', (sock) => {
         }
         else{
           io.to(sock.id).emit('goodJoin');
-          gameFound = true;
-
         }
       }
     }
     if(!gameFound)
     {
-      console.log("notFoundGame");
+      console.log(username + " attempted to join lobby: " + lobbyname + ", but lobby was not found. :L");
       io.to(sock.id).emit('badJoin', "Lobby with name: " + lobbyname + " not found. :(");
     }
   });
@@ -99,13 +95,13 @@ io.on('connection', (sock) => {
     {
       io.to(sock.id).emit('badCreate', "Invalid Default stack size, please try again");
     }
-    else if(smallBlind < bigBlind)
+    else if(smallBlind > bigBlind)
     {
       io.to(sock.id).emit('badCreate', "Invalid small/big blind set up");
     }
     else{
       io.to(sock.id).emit('goodCreate');
-      console.log(username + " successfully created a new Lobby with ID: " + lobbyname);
+      //console.log(username + " successfully created a new Lobby with ID: " + lobbyname);
     }
     
   });
@@ -113,37 +109,45 @@ io.on('connection', (sock) => {
   
   sock.on('createRoom', ({username, stacksize, lobbyname, smallBlind, bigBlind, password}) => {
     var theGame = new pokerGame(lobbyname);
+    theGame.smallBlind = smallBlind;
+    theGame.bigBlind = bigBlind;
+    theGame.password = password;
+    theGame.defaultStackSize = stacksize;
     console.log("New game created with ID: " + lobbyname);
     listOfPokerRooms.push(theGame);
-    sock.emit('redirect', '/poker.html');
+        // const user = new player(username, stacksize, sock.id, lobbyname);
 
-    const user = new player(username, stacksize, sock.id, lobbyname);
+        // //Actually join the room
+        // sock.join(user.getRoom());
 
-    //Actually join the room
-    sock.join(user.getRoom());
-
-    //console.log(user);
-    theGame.playerJoin(user);
+        // //console.log(user);
+        // theGame.playerJoin(user);
 
     //Send users client the room name and info so it can display
-    io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
-    io.to(theGame.getGameID()).emit('roomPlayers', theGame.emitPlayers());
-    io.to(user.getRoom()).emit('message', theGame.getCurrentUser(sock.id).getName() + " is now spectating...");
+    // io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
+    // io.to(theGame.getGameID()).emit('roomPlayers', theGame.emitPlayers());
+    // io.to(user.getRoom()).emit('message', theGame.getCurrentUser(sock.id).getName() + " is now spectating...");
     
   });
 
-  sock.on('joinRoom', ({username, stacksize, lobbyname}) => {
-    //Check for room already made
-    // let theGame = null;
-    // var isCreated = false;
-    // for(var i = 0; i < listOfPokerRooms.length; i++)
-    // {
-    //   if(listOfPokerRooms[i].getGameID() == lobbyname)
-    //   {
-    //     isCreated = true;
-    //     theGame = listOfPokerRooms[i];
-    //   }
-    // }
+  sock.on('joinRoom', (arrLobbynameUserNameStackSize) => {
+
+    //Find lobby for user
+    var lobbyname = arrLobbynameUserNameStackSize[0];
+    var username = arrLobbynameUserNameStackSize[1];
+    var stacksize = arrLobbynameUserNameStackSize[2];
+
+    let theGame = null;
+    for(var i = 0; i < listOfPokerRooms.length; i++)
+    {
+      if(listOfPokerRooms[i].getGameID() == lobbyname)
+      {
+        theGame = listOfPokerRooms[i];
+        console.log("Found game: " + lobbyname);
+      }
+    }
+    
+    const user = new player(username, stacksize, sock.id, lobbyname);
 
     // //Create new game
     // if(!isCreated)
@@ -161,7 +165,6 @@ io.on('connection', (sock) => {
     if(theGame.getBegun()){
       sock.emit('gameBegun');
     }
-    const user = new player(username, stacksize, sock.id, lobbyname);
 
     //Actually join the room
     sock.join(user.getRoom());
@@ -169,10 +172,12 @@ io.on('connection', (sock) => {
     //console.log(user);
     theGame.playerJoin(user);
 
-    //Send users client the room name and info so it can display
+    //Send users client the room name and info so it can display'
     io.to(user.getRoom()).emit('roomUsers', {room: user.getRoom(), users: theGame.getAllNames(), stacksizes: theGame.getAllStackSizes()});
     io.to(theGame.getGameID()).emit('roomPlayers', theGame.emitPlayers());
     io.to(user.getRoom()).emit('message', theGame.getCurrentUser(sock.id).getName() + " is now spectating...");
+
+    
 
   });
 

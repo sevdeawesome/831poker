@@ -17,7 +17,6 @@ $(document).ready(function(){
         lobbyname = document.getElementById('lobbyname').value;
         password = document.getElementById('password').value;
 
-        sock.emit('test', "workinForJoin");
         sock.emit('joinAttempt', {username, stacksize, lobbyname, password});
         
 
@@ -34,7 +33,6 @@ $(document).ready(function(){
         bigBlind = document.getElementById('popupbigblind').value;
         password = document.getElementById('popuppassword').value;
 
-        sock.emit('test', "workinForCreate");
         sock.emit('createAttempt', {username, stacksize, lobbyname, smallBlind, bigBlind, password});
 
         
@@ -46,13 +44,27 @@ $(document).ready(function(){
     //Moving user to the next html page (poker.html) if theyre request to create or join a game was valid.
     
     sock.on('goodJoin', () => {
-        sock.emit('joinRoom', {username, stacksize, lobbyname});
-        sock.emit('test', username + " successfully joined the lobby: " + lobbyname);
+       
+        localStorage.setItem('name', (username));
+        localStorage.setItem('lobby', (lobbyname));
+        localStorage.setItem('stacksize', (stacksize));
+
+        window.location.href = "/poker.html";
+        // sock.emit('joinRoom', {username, stacksize, lobbyname});
+        // sock.emit('test', username + " successfully joined the lobby: " + lobbyname);
+
     });
 
     sock.on('goodCreate', () => {
         sock.emit('createRoom', {username, stacksize, lobbyname, smallBlind, bigBlind, password});
         sock.emit('test', username + " successfully created the lobby: " + lobbyname + " with password: " + password);
+        
+        localStorage.setItem('name', (username));
+        localStorage.setItem('lobby', (lobbyname));
+        localStorage.setItem('stacksize', (stacksize));
+
+        window.location.href = "/poker.html";
+
     });
 
     sock.on('badJoin', (text) => {
@@ -63,7 +75,8 @@ $(document).ready(function(){
         alert(text);
     });
 
-    sock.on('redirect', (location) => {
-        window.location.href = location;
-        
-    });
+    // sock.on('redirect', (location) => {
+    //     window.location.href = location;
+    //     sock.emit('joinAfterSwitchHref', );
+    //     //sock.emit('joinRoom', {username, stacksize, lobbyname});
+    // });

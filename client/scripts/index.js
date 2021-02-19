@@ -2,6 +2,7 @@
 var yourStack;
 var currPot = 0;
 var currMoneyInBetting = 0;
+var username = localStorage.getItem('name');
 
 
 const sock = io();
