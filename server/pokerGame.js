@@ -16,8 +16,8 @@ class pokerGame{
         this.deck = new DeckOfCards();
         this.turnTime = 10000;
         this.dealerIdx = 0;
-        this.smallBlind = 10;
-        this.bigBlind = 20;
+        this.smallBlind;
+        this.bigBlind;
         this.hand = null;
         this.handNumber = 0;
     }

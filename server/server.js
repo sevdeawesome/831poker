@@ -109,10 +109,10 @@ io.on('connection', (sock) => {
   
   sock.on('createRoom', ({username, stacksize, lobbyname, smallBlind, bigBlind, password}) => {
     var theGame = new pokerGame(lobbyname);
-    theGame.smallBlind = smallBlind;
-    theGame.bigBlind = bigBlind;
+    theGame.smallBlind = Number(smallBlind);
+    theGame.bigBlind = Number(bigBlind);
     theGame.password = password;
-    theGame.defaultStackSize = stacksize;
+    theGame.defaultStackSize = Number(stacksize);
     console.log("New game created with ID: " + lobbyname);
     listOfPokerRooms.push(theGame);
         // const user = new player(username, stacksize, sock.id, lobbyname);
@@ -135,7 +135,7 @@ io.on('connection', (sock) => {
     //Find lobby for user
     var lobbyname = arrLobbynameUserNameStackSize[0];
     var username = arrLobbynameUserNameStackSize[1];
-    var stacksize = arrLobbynameUserNameStackSize[2];
+    var stacksize = Number(arrLobbynameUserNameStackSize[2]);
 
     let theGame = null;
     for(var i = 0; i < listOfPokerRooms.length; i++)
