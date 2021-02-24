@@ -251,6 +251,41 @@ function appendPlayer(currPlayer, i, dealerIndex){
     playersList.appendChild(liElement);
 }
 /*
+<li class="menuPlayer">
+              
+                <p class="popuptext"><span class="floatleft">Players Name </span> <span class="floatright">
+                <button class="actionbuttons smallerfont">Kick</button>
+               <button class="actionbuttons smallerfont">Make Host</button>
+                  <button class="actionbuttons smallerfont">Change Stack</button>
+                  <input class="innerinput smallerfont" autocomplete="off" type="number" title="newstack" />
+                  </span>
+              </p>
+                  
+                  
+                
+              
+            </li>
+
+*/
+
+function createListPlayers(playerArr){
+  
+  var playersList = document.getElementById("hostsList");
+  playersList.innerHTML = "";
+  for(var i = 0; i < playerArr.length; i++){
+    var liElement = document.createElement('li');
+    var currPlayer = playerArr[i];
+    liElement.classList.add("menuPlayer");
+    liElement.innerHTML = '<p class="popuptext"><span class="floatleft">' + currPlayer.name;
+    liElement.innerHTML += ' </span> <span class="floatright">';
+    liElement.innerHTML += '<button class="actionbuttons smallerfont">Kick</button>';
+    liElement.innerHTML += '<button class="actionbuttons smallerfont">Make Host</button>';
+    liElement.innerHTML += '<button class="actionbuttons smallerfont">Change Stack</button>';
+    liElement.innerHTML += '<input class="innerinput smallerfont" autocomplete="off" type="number" title="newstack" /> </span></p>';
+    playersList.appendChild(liElement);
+  }
+}
+/*
  [dealerPosition, {name, stacksize, currMoneyInBettingRound, isFolded, card1, card2, isShown1, isShown2, isStraddled, isTurn, hasHand}]
 <li class="player">
         <img class='opponentCards leftTilt' src='../img/blue_back.png'></img><img class='opponentCards rightTilt' src='../img/blue_back.png'></img><br>
@@ -268,5 +303,5 @@ function outputUsers(users, stacksizes){
     
   });
 }
-
 */
+

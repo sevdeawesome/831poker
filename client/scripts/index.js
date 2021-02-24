@@ -100,6 +100,7 @@ sock.on('validOption', () => {
 
 sock.on("roomPlayers", (roomPlayers) =>{
   createPlayers(roomPlayers);
+  createListPlayers(roomPlayers);
 });
 
 sock.on("audio", (audiotype) =>{

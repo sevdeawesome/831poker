@@ -50,6 +50,17 @@ body{
 #menu:hover{
     cursor: pointer;
 }
+
+#pause{
+    position: fixed;
+    color: white;
+    right: 7.2vw;
+    font-size: 3.6vw;
+    top: 1.2vh;
+}
+#pause:hover{
+    cursor: pointer;
+}
 /* console */
 #consolediv{
     width: 25%;
@@ -236,7 +247,7 @@ body{
     cursor: pointer;
 }
 .active{
-    background-color: white;
+    background-color: white !important;
 }
 
 
@@ -407,15 +418,3 @@ li{
 }
 
 
-#innerpopup .popuptext{
-    font-family: theFont;
-    text-transform: uppercase;
-    color: white;
-    font-size: 30px;
-}
-#innerpopup select{
-    font-family: theFont;
-    text-transform: uppercase;
-    color: black;
-    font-size: 30px;
-}
