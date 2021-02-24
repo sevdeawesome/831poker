@@ -12,6 +12,7 @@ The following is basic metadata and importing the base stylesheet and script
 <meta name='subject' content=''>
 <link rel="stylesheet" type="text/css" href="styles/index.css">
 <link rel="stylesheet" type="text/css" href="styles/poker.css">
+<link rel="stylesheet" type="text/css" href="styles/hostmenu.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <!--
@@ -33,25 +34,55 @@ Bootstrap CSS import:
     <center>
       <div id="innerpopup" >
         <i class="fa fa-times destroy" style="color: white; float: right; font-size: 5em; margin-right: 15px; "></i>
-        <span class ="popuptext">Kick Player:  </span class ="popuptext">   <select name="cars" id="cars">
-          <option value="volvo"></option>
-          <option value="saab">Saab</option>
-          <option value="opel">Opel</option>
-          <option value="audi">Audi</option>
-        </select> <br>
+        
       
-       
-        <span class="popuptext">Big Blind: </span>  <br>
-        <span class="popuptext">Small Blind: </span> <br>
-        <span class="popuptext">Allow Straddle: </span> <br>
-        <br> <br>
-        <button class="actionbuttons">SUBMIT</button>
+        <button class="menuoptions active" onclick="openOption(event, 'gameoptions')">GAME OPTIONS</button> <button class="menuoptions" onclick="openOption(event, 'playeroptions')">PLAYERS</button>
+        <br><br><br>
+        <div id="gameoptions" class="tabcont">
+            <span class="popuptext">Big Blind: </span><input class="innerinput" autocomplete="off" type="number" title="bigblindinput" /> <br><br>
+          <span class="popuptext">Small Blind: </span> <input class="innerinput" autocomplete="off" type="number" title="smallblindinput" /><br><br>
+          <span class="popuptext">Allow Straddle: </span>
+  
+          <label class="switch">
+            <input type="checkbox" id="checker">
+            <span class="slider2"></span>
+          </label> <br>  <br>  <br>
+        
+          <!-- <br> <p class="popuptext">Password? 
+        
+            <label class="switch">
+              <input type="checkbox" id="checker">
+              <span class="slider round"></span>
+            </label>
+    <br>  <br>
+            <br> <input id="popuppassword" class="serverpassword" type="text" name="password" placeholder="Not required" autocomplete="off"> </p> -->
+          <button class="actionbuttons">SAVE CHANGES</button>
+        </div>
+        <div id="playeroptions" class="tabcont">
+          <ul id="hostsList">
+            <li class="menuPlayer">
+              
+                <p class="popuptext"><span class="floatleft">Players Name</span> <span class="floatright">
+                  <button class="actionbuttons smallerfont">Kick</button>
+                  <button class="actionbuttons smallerfont">Make Host</button>
+                  <button class="actionbuttons smallerfont">Change Stack</button>
+                  <input class="innerinput smallerfont" autocomplete="off" type="number" title="newstack" />
+                  
+                </span>
+              </p>
+              
+            </li>
+          </ul>
+          
+        </div>
+        
+        
         </div>
     </center>
     </div>
   <img id="tableLogo" src="img/official-logo-white.png">
-  <div id="menu"><i class="fa fa-bars"></i></div>
-
+  <div id="menu" title="Menu"><i class="fa fa-bars"></i></div>
+  <div id="pause" title="Pause Game"><i class="fa fa-pause"></i></div>
   <center><button id="generate">Begin Game</button>
     </center>
 
@@ -196,5 +227,6 @@ Bootstrap CSS import:
   console.log(poop);
 
 </script>
+
 
 </html>
