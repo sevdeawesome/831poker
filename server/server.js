@@ -216,6 +216,19 @@ io.on('connection', (sock) => {
     
   });
 
+  sock.on('pauseUnpause', () =>{
+    var theGame = null;
+    for(var i = 0; i < listOfPokerRooms.length; i++)
+    {
+      if(listOfPokerRooms[i].checkIfSockIDisInGame(sock.id))
+      {
+        
+        theGame = listOfPokerRooms[i];
+        if(listOfPokerRooms[i].getHost().getSock()==sock.id)
+        listOfPokerRooms[i].pauseUnPause();
+      }
+    }
+  });
 
   var interval = null;
   //setTimeout(function(){ playermove = "f"; }, turnTime);
@@ -229,15 +242,17 @@ io.on('connection', (sock) => {
     {
       if(listOfPokerRooms[i].checkIfSockIDisInGame(sock.id))
       {
+       
         theGame = listOfPokerRooms[i];
+        if(theGame.getTotalPlayers()>1)
         listOfPokerRooms[i].setBegun(true);
       }
     }
-
+    if(theGame.getTotalPlayers()>1){
     console.log("Someone has started the game in: " + theGame.getGameID());
     io.to(theGame.getGameID()).emit('gameBegun');
     theGame.setBegun(true);
-
+    }
     //the game has begun so the game goes in here
     
 

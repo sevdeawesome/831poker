@@ -25,7 +25,7 @@ class pokerHand
     this.flopDealt = false;
     this.turnDealt = false;
     this.riverDealt = false;
-    
+    this.isPaused= false;
 
     this.runHand();
 }
@@ -43,7 +43,18 @@ class pokerHand
    //Deals the River
    //Round of betting, if only 1 person left - > they win the pot
    //Showdown, two people compare hands and whoever wins, - > they win the pot
+    getPaused(){
+        return this.isPaused;
+    }
 
+    // pause(){
+    //     this.isPaused==true;
+    // }
+
+    unPause(){
+        this.isPaused==false;
+        updateHand();
+    }
    runHand()
    {
        for(var i = 0; i < this.playersInHand.length; i++)
@@ -66,14 +77,15 @@ class pokerHand
        //Sets initial raiser to big blind
        this.initialRaiser = this.getNextPlayer(this.getNextPlayer(this.dealer));
        console.log("Dealer is: " + this.dealer.getName());
+       
        this.updateHand();
        //console.log(this.initialRaiser);
        //this.io.to(this.theGame.getPlayerAt(this.theGame.getDealerIdx()).getSock()).emit('yourTurn', this.theGame.getTurnTime());
        //var preFlopBets = bettingRound()
-       }
+       
 
    }
-
+   }
 
    updateHand()
    {
@@ -516,7 +528,9 @@ class pokerHand
     if(valTurn == "check" && this.getCurrPlayer() == this.bigBlind && this.getCurrBet() == this.theGame.getBB() && this.preflop == true)
     {
         this.playersInHand = this.updatePlayersLeftInHand();
+       
         this.updateHand();
+        
         this.preflop = false;
         this.emitEverything();
     }
@@ -530,11 +544,12 @@ class pokerHand
     
     //This player turn is over, move to the next thing
     this.emitEverything();
+    
     this.updateHand();
-    }
+  
    
    }
-
+   }
    validOption(valTurn)
    {
        if(valTurn == null)

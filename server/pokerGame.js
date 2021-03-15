@@ -237,7 +237,15 @@ class pokerGame{
             this.players[i].resetInfo();
         }
     }
-    
+    pauseUnPause() {
+        //set up pause and unpause functionality here.
+        console.log("The game has been paused");
+        if(this.hand.getPaused==false){
+            this.hand.unPause();
+        } else {
+            this.hand.pause();
+        }
+    }
     
     emitPlayers(){
         /*

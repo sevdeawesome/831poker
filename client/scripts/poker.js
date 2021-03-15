@@ -64,6 +64,10 @@ function allInRaise(){
   raise.value = yourStack ;
   slider.value = Number(yourStack + currMoneyInBetting);
 }
+var pauseButton = document.getElementById("pause");
+pauseButton.onclick = function() {
+  sendPauseUnPause();
+}
 var qRaise = document.getElementById("quarterRaise");
 qRaise.onclick = function(){
   quarterRaise();
@@ -76,3 +80,4 @@ var aRaise = document.getElementById("allInRaise");
 aRaise.onclick = function(){
   allInRaise();
 };
+

@@ -82,6 +82,10 @@ function showBoard(arr){
 }
 
 
+function sendPauseUnPause(){
+  sock.emit('pauseUnpause')
+}
+
 
 //sending a turn to the server
 function sendCheck(e)
