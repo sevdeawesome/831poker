@@ -1,0 +1,22 @@
+{
+  "name": "sPoker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "latest-version": "^5.1.0",
+    "socket.io": "^3.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
