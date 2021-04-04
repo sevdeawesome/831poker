@@ -3,7 +3,7 @@ const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
 
-
+const port = process.env.PORT || 8080;
 
 //sock.emit() // only emit to sock
 // io.emit() //emit to all sockets
@@ -318,8 +318,8 @@ server.on('error', (err) =>{
   console.log("error: ", err);
 });
 
-server.listen(8080, () => {
-  console.log("Server started on port 8080");
+server.listen(port, () => {
+  console.log("Server started on port", port);
 });
 
 
