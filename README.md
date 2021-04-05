@@ -4,7 +4,7 @@
 
 ## Authors: <[Severin Field](https://github.com/sevdeawesome)>, <[Thomas Trenholme](https://github.com/thomastrenholme)>
 
-### Designs from [Nik Milcevski](https://www.newgrafik.us/)
+### Design concept from [Nik Milcevski](https://www.newgrafik.us/)
  
 ![](https://github.com/sevdeawesome/831poker/blob/main/art/831poker-showcase.png)
 
