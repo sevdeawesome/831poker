@@ -8,6 +8,7 @@
  
 ![](https://github.com/sevdeawesome/831poker/blob/main/art/831poker-showcase.png)
 
+## Currently hosted on heroku: https://poker831.herokuapp.com/
 
 ## To install:
 1) download files
