@@ -1,12 +1,12 @@
 
 ![](https://github.com/sevdeawesome/831poker/blob/main/art/new_logo.jpg)
 
-
+![](https://github.com/sevdeawesome/831poker/blob/main/art/cards-on-board.jpg)
 ## Authors: <[Severin Field](https://github.com/sevdeawesome)>, <[Thomas Trenholme](https://github.com/thomastrenholme)>
 
 ### Design concept from [Nik Milcevski](https://www.newgrafik.us/)
  
-![](https://github.com/sevdeawesome/831poker/blob/main/art/831poker-showcase.png)
+
 
 ## Currently hosted on heroku: https://poker831.herokuapp.com/
 
@@ -42,3 +42,5 @@
 - Mute button to toggle sounds
 
 
+## Design Banner:
+![](https://github.com/sevdeawesome/831poker/blob/main/art/831poker-showcase.png)
