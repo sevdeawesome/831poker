@@ -1,5 +1,7 @@
 
-![](https://github.com/sevdeawesome/831poker/blob/main/art/new_logo.jpg)
+![](https://github.com/sevdeawesome/831poker/blob/main/art/logo-black.png)
+
+
 
 ![](https://github.com/sevdeawesome/831poker/blob/main/art/cards-on-board.png)
 
