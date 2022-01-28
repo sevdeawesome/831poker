@@ -39,7 +39,9 @@
  ## Features:
 - Custom built UI
 - Multiplayer poker rounds functionality
-- Chat with your lobby
+- Can host multiple separate lobbies
+- Fully integrated chat lobbies in each poker lobby
+- Password protected or public lobbies
 
 ## Coming soon:
 - Options for game host
