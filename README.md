@@ -1,3 +1,4 @@
+# Live test: https://831poker.azurewebsites.net/
 
 ![](https://github.com/sevdeawesome/831poker/blob/main/art/logo-black.png)
 
@@ -13,7 +14,7 @@
 
 
 ~~Currently hosted on heroku: https://poker831.herokuapp.com/~~
-## MOVED APP TO AZURE: https://831poker.azurewebsites.net/
+# MOVED APP TO AZURE: https://831poker.azurewebsites.net/
 
 ## To install:
 1) download files
