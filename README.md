@@ -12,7 +12,8 @@
  
 
 
-## Currently hosted on heroku: https://poker831.herokuapp.com/
+~~Currently hosted on heroku: https://poker831.herokuapp.com/~~
+## MOVED APP TO AZURE: https://831poker.azurewebsites.net/
 
 ## To install:
 1) download files
